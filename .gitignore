@@ -118,3 +118,10 @@ temp/
 
 # Local Netlify folder
 .netlify
+
+# Added by Task Master AI
+# Dependency directories
+# Editor directories and files
+.idea
+.vscode
+# OS specific
