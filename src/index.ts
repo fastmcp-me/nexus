@@ -177,23 +177,6 @@ server.setRequestHandler(
         });
       }
 
-      // Legacy search_models tool for backward compatibility
-      tools.push({
-        name: 'search_models',
-        description:
-          'Search for OpenRouter models (legacy - use search tool instead)',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            query: {
-              type: 'string',
-              description: 'Search query for models',
-            },
-          },
-          required: ['query'],
-        },
-      });
-
       return JSONValidator.wrapMCPResponse({ tools });
     });
   })
@@ -302,21 +285,6 @@ server.setRequestHandler(
               correlationId,
             });
           }
-        }
-
-        case 'search_models': {
-          // Legacy functionality - kept for backward compatibility
-          logger.info('Legacy model search requested', {
-            query: request.params.arguments?.query,
-          });
-          return JSONValidator.wrapMCPResponse({
-            content: [
-              {
-                type: 'text',
-                text: `Legacy model search for: ${request.params.arguments?.query || 'all'}. Use the 'search' tool instead for actual search functionality.`,
-              },
-            ],
-          });
         }
 
         default:

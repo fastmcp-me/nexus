@@ -885,11 +885,114 @@
             "parentTaskId": 13
           }
         ]
+      },
+      {
+        "id": 14,
+        "title": "Remove Legacy search_models Tool from MCP Server",
+        "description": "Remove the outdated search_models tool from the MCP server implementation and ensure all references are cleaned up. This is a straightforward removal task with no replacement functionality needed.",
+        "status": "done",
+        "dependencies": [
+          5,
+          13
+        ],
+        "priority": "medium",
+        "details": "Remove the legacy search_models tool implementation from the MCP server by: 1) Identifying and removing the search_models tool definition from the MCP server's tool registry and handler mappings. 2) Deleting any associated handler functions, type definitions, and utility methods specific to search_models. 3) Cleaning up any imports, exports, or references to search_models throughout the codebase including configuration files and documentation. 4) Updating any internal tool listing or enumeration logic to exclude search_models. 5) Verifying that the MCP server's tool discovery and listing endpoints no longer expose search_models. 6) Removing any search_models-specific tests and test data. 7) Updating any inline comments or documentation that reference the old tool. 8) Ensuring server functionality remains stable after the removal.",
+        "testStrategy": "Verify legacy tool removal by: 1) Running MCP server and confirming search_models does not appear in the tools/list response. 2) Testing that attempts to call search_models tool result in proper \"tool not found\" errors. 3) Running full test suite to ensure no broken references or imports remain. 4) Performing code search to confirm no remaining references to search_models exist in the codebase. 5) Testing MCP client integration to ensure tool discovery only shows current, supported tools. 6) Validating that server startup and shutdown processes are unaffected by the removal. 7) Confirming that removing search_models does not impact any other existing tools or server functionality.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Remove search_models Tool Implementation and Registry",
+            "description": "Remove the core search_models tool implementation including its definition, handler functions, and registry entries from the MCP server codebase.",
+            "dependencies": [],
+            "details": "1) Locate and remove the search_models tool definition from the MCP server's tool registry. 2) Delete the search_models handler function and any associated utility methods. 3) Remove search_models from tool enumeration and discovery logic. 4) Clean up any type definitions, interfaces, or schemas specific to search_models. 5) Remove search_models entries from configuration files and tool mappings. 6) Update imports/exports to exclude search_models references.",
+            "status": "done",
+            "testStrategy": "Verify that the MCP server starts successfully without errors, tool listing endpoints no longer expose search_models, and attempting to call search_models returns appropriate 'tool not found' errors."
+          },
+          {
+            "id": 2,
+            "title": "Clean Up References and Validate Server Stability",
+            "description": "Remove all remaining references to search_models throughout the codebase including tests, documentation, and comments, then validate overall server stability.",
+            "dependencies": [
+              1
+            ],
+            "details": "1) Search and remove all search_models references from test files, test data, and test configurations. 2) Update documentation, README files, and inline comments that mention search_models. 3) Remove any search_models-specific mock data or fixtures. 4) Perform comprehensive testing to ensure no broken references remain. 5) Validate that all existing MCP server functionality works correctly after the removal. 6) Check that tool discovery, listing, and execution of remaining tools function properly.",
+            "status": "done",
+            "testStrategy": "Run full test suite to ensure no test failures, perform integration testing of remaining MCP tools, verify server startup and shutdown processes, and conduct code search to confirm no lingering search_models references exist."
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Project Naming Strategy and Rebranding Analysis",
+        "description": "Conduct comprehensive analysis and propose new project names that support future expansion beyond OpenRouter and search functionality while maintaining clarity and marketability for potential OSS growth.",
+        "details": "Perform strategic project naming analysis and rebranding preparation: 1) Research and analyze current project scope limitations imposed by \"openrouter-search\" name, documenting specific constraints for future expansion (e.g., supporting other AI providers, adding non-search tools). 2) Conduct competitive analysis of similar OSS projects in the AI/MCP ecosystem to identify naming patterns and avoid conflicts. 3) Generate 10-15 alternative project names considering: generic AI tool integration (e.g., \"mcp-ai-tools\", \"ai-search-mcp\"), capability-focused names (e.g., \"smart-search-mcp\", \"research-assistant-mcp\"), or abstract/brandable names (e.g., \"nexus-mcp\", \"catalyst-search\"). 4) Evaluate each name against criteria: future extensibility, memorability, npm package availability, domain availability, trademark conflicts, and SEO considerations. 5) Create detailed rebranding impact analysis covering: package.json name changes, npm registry migration strategy, documentation updates, CLI command changes (npx), and user migration path. 6) Develop implementation timeline and rollout strategy including backwards compatibility considerations, deprecation notices, and communication plan for existing users. 7) Document naming rationale and decision framework for future reference.",
+        "testStrategy": "Validate naming strategy through: 1) Verify npm package name availability for top 3 candidates using npm search and registry checks. 2) Confirm domain availability (.com, .dev, .io) for potential project websites. 3) Conduct trademark searches through USPTO and international databases for top candidates. 4) Test name memorability and clarity through informal surveys with 5-10 developers. 5) Validate technical feasibility by testing package rename process in isolated environment including npm publish, npx command changes, and import statement updates. 6) Review naming decision against established OSS project naming best practices and ensure alignment with MCP ecosystem conventions.",
+        "status": "pending",
+        "dependencies": [
+          1,
+          12
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Current Project Scope Analysis and Naming Constraints Documentation",
+            "description": "Research and analyze the limitations imposed by the current 'openrouter-search' name, documenting specific constraints for future expansion beyond OpenRouter and search functionality.",
+            "dependencies": [],
+            "details": "Create comprehensive documentation analyzing: 1) Current name's semantic limitations (OpenRouter-specific, search-only implications), 2) Future expansion scenarios (other AI providers like Anthropic, OpenAI direct, Ollama; non-search tools like code generation, data analysis), 3) Brand perception constraints, 4) Technical namespace limitations. Document findings in structured format with specific examples of blocked expansion paths.",
+            "status": "pending",
+            "testStrategy": "Review documentation with stakeholders to validate identified constraints and ensure comprehensive coverage of expansion scenarios."
+          },
+          {
+            "id": 2,
+            "title": "Competitive Analysis and AI/MCP Ecosystem Naming Research",
+            "description": "Conduct thorough competitive analysis of similar OSS projects in the AI/MCP ecosystem to identify naming patterns, best practices, and avoid potential conflicts.",
+            "dependencies": [
+              1
+            ],
+            "details": "Research and catalog: 1) Existing MCP-related projects and their naming conventions, 2) AI tool integration projects and naming patterns, 3) Popular OSS AI projects for inspiration, 4) Identify naming conflicts to avoid, 5) Document successful naming strategies in the ecosystem. Create comparison matrix showing project names, their scope, naming rationale, and market positioning.",
+            "status": "pending",
+            "testStrategy": "Cross-reference findings with npm registry, GitHub, and domain registrations to validate availability and conflict analysis."
+          },
+          {
+            "id": 3,
+            "title": "Alternative Name Generation and Categorization",
+            "description": "Generate 10-15 alternative project names across different naming strategies: generic AI tool integration, capability-focused, and abstract/brandable approaches.",
+            "dependencies": [
+              2
+            ],
+            "details": "Create structured list of names in categories: 1) Generic AI integration (mcp-ai-tools, ai-search-mcp, mcp-connector, ai-bridge-mcp), 2) Capability-focused (smart-search-mcp, research-assistant-mcp, query-engine-mcp, ai-research-tools), 3) Abstract/brandable (nexus-mcp, catalyst-search, prism-ai, vertex-mcp, flux-search). For each name, document: intended positioning, expansion potential, and initial rationale.",
+            "status": "pending",
+            "testStrategy": "Validate name generation completeness by ensuring each category has 3-5 options and all names align with identified expansion scenarios."
+          },
+          {
+            "id": 4,
+            "title": "Name Evaluation and Scoring Matrix",
+            "description": "Systematically evaluate each proposed name against comprehensive criteria including future extensibility, memorability, availability, and legal considerations.",
+            "dependencies": [
+              3
+            ],
+            "details": "Create evaluation matrix scoring each name (1-5 scale) on: 1) Future extensibility potential, 2) Memorability and pronounceability, 3) npm package availability, 4) Domain availability (.com, .dev, .io), 5) Trademark conflict risk, 6) SEO potential and searchability, 7) Brand strength and professional appeal. Include availability research results and trademark search findings. Calculate weighted scores and rank names.",
+            "status": "pending",
+            "testStrategy": "Validate scoring by having multiple evaluators score a subset of names independently and comparing results for consistency."
+          },
+          {
+            "id": 5,
+            "title": "Rebranding Impact Analysis and Implementation Strategy",
+            "description": "Create comprehensive rebranding impact analysis and detailed implementation timeline covering technical changes, user migration, and rollout strategy.",
+            "dependencies": [
+              4
+            ],
+            "details": "Document complete rebranding plan including: 1) Technical changes (package.json updates, npm registry migration, CLI command changes, repository renaming), 2) User migration strategy (backwards compatibility, deprecation timeline, migration scripts), 3) Communication plan (announcement strategy, documentation updates, community outreach), 4) Implementation timeline with milestones, 5) Risk mitigation strategies, 6) Success metrics and monitoring plan. Include detailed decision framework and rationale documentation for future reference.",
+            "status": "pending",
+            "testStrategy": "Create migration test plan with staging environment to validate backwards compatibility and user experience during transition period."
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T17:26:17.203Z",
+      "updated": "2025-06-20T22:09:43.863Z",
       "description": "Tasks for master context"
     }
   }

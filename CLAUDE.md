@@ -160,7 +160,7 @@ The project uses a sophisticated configuration system in `src/config/`:
 ### Request Flow
 
 1. **Initialization**: Configuration → Logger setup → Search tool initialization
-2. **Tool Registration**: Search tool and legacy search_models tool registered
+2. **Tool Registration**: Search tool registered
 3. **Request Handling**: Structured request/response with comprehensive error handling
 4. **Resource Management**: Configuration status endpoint for health monitoring
 

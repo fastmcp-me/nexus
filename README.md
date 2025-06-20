@@ -209,10 +209,6 @@ Based on current information, here are the latest developments in AI...
 - Sources: 5 found
 ```
 
-### `search_models` (Legacy)
-
-Backward compatibility tool. Use the `search` tool instead.
-
 ## Configuration
 
 ### Environment Variables

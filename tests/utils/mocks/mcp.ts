@@ -23,7 +23,7 @@ export const mockMcpRequest = (
   id: 1,
   method: 'tools/call',
   params: {
-    name: 'search_models',
+    name: 'search',
     arguments: {
       query: 'claude',
     },
@@ -43,7 +43,7 @@ export const mockMcpResponse = (
 export const mockMcpToolCall = (
   overrides?: Partial<McpToolCall>
 ): McpToolCall => ({
-  name: 'search_models',
+  name: 'search',
   arguments: {
     query: 'claude',
     limit: 10,
