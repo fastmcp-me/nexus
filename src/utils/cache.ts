@@ -183,7 +183,6 @@ export class TTLCache<T> {
    */
   destroy(): void {
     if (this.cleanupTimer) {
-      // eslint-disable-next-line no-undef
       clearInterval(this.cleanupTimer);
       this.cleanupTimer = null;
     }
@@ -194,7 +193,6 @@ export class TTLCache<T> {
    * Start periodic cleanup of expired entries
    */
   private startCleanup(): void {
-    // eslint-disable-next-line no-undef
     this.cleanupTimer = setInterval(() => {
       this.cleanup();
     }, this.cleanupInterval);

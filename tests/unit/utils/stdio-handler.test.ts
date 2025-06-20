@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { PassThrough } from 'stream';
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+
 import {
   StdioHandler,
-  stdioHandler,
   sendStdioMessage,
   createStdioReceiver,
   type StdioMessage,
@@ -208,12 +209,17 @@ describe('StdioHandler', () => {
 
       return new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
-          reject(new Error('Test timeout - only received ' + messages.length + ' messages'));
+          reject(
+            new Error(
+              'Test timeout - only received ' + messages.length + ' messages'
+            )
+          );
         }, 1000);
 
         receiver.on('data', (message: StdioMessage) => {
           messages.push(message);
-          if (messages.length === 2) { // Only test LF and CRLF
+          if (messages.length === 2) {
+            // Only test LF and CRLF
             clearTimeout(timeout);
             expect(messages).toHaveLength(2);
             expect(messages[0].id).toBe(1);

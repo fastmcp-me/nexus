@@ -483,7 +483,7 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-async function main() {
+export async function createServer() {
   try {
     // Initialize configuration first
     initializeConfiguration();
@@ -504,6 +504,8 @@ async function main() {
         initialized: true,
       },
     });
+
+    return server;
   } catch (error) {
     // If we don't have a logger yet, create a basic one
     const errorLogger =
@@ -515,6 +517,14 @@ async function main() {
       });
 
     errorLogger.error('Failed to start server', { error });
+    throw error;
+  }
+}
+
+async function main() {
+  try {
+    await createServer();
+  } catch (_error) {
     process.exit(1);
   }
 }

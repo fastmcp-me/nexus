@@ -1,4 +1,5 @@
-import { PassThrough, Transform } from 'stream';
+import { Transform } from 'stream';
+
 import { logger } from './logger.js';
 
 export interface StdioMessage {
