@@ -289,6 +289,116 @@ export class EnhancedSecureLogger extends SecureLogger {
       ...meta,
     });
   }
+
+  /**
+   * Log JSON serialization events with context
+   */
+  jsonSerialization(
+    operation: 'serialize' | 'deserialize' | 'validate',
+    success: boolean,
+    meta?: {
+      dataType?: string;
+      dataSize?: number;
+      duration?: number;
+      error?: string;
+      fallbackUsed?: boolean;
+      sanitized?: boolean;
+      circularRefs?: boolean;
+      depth?: number;
+      method?: string;
+      requestId?: string;
+    }
+  ): void {
+    const level = success ? 'debug' : 'warn';
+    const message = `JSON ${operation} ${success ? 'succeeded' : 'failed'}`;
+
+    this[level](message, {
+      operation,
+      success,
+      ...meta,
+    });
+  }
+
+  /**
+   * Log MCP protocol events
+   */
+  mcpProtocol(
+    event: 'request' | 'response' | 'error' | 'tool_call' | 'resource_access',
+    method?: string,
+    meta?: {
+      requestId?: string;
+      toolName?: string;
+      resourceUri?: string;
+      duration?: number;
+      error?: string;
+      statusCode?: number;
+      responseSize?: number;
+      validationStatus?: 'passed' | 'failed' | 'sanitized';
+    }
+  ): void {
+    this.info(`MCP ${event}`, {
+      event,
+      method,
+      ...meta,
+    });
+  }
+
+  /**
+   * Log JSON-RPC 2.0 protocol events
+   */
+  jsonRpc(
+    event: 'request' | 'response' | 'notification' | 'error',
+    method?: string,
+    meta?: {
+      id?: string | number;
+      error?: {
+        code: number;
+        message: string;
+        data?: unknown;
+      };
+      duration?: number;
+      responseSize?: number;
+      validationErrors?: string[];
+    }
+  ): void {
+    const level = event === 'error' ? 'error' : 'debug';
+
+    this[level](`JSON-RPC ${event}`, {
+      event,
+      method,
+      ...meta,
+    });
+  }
+
+  /**
+   * Log response validation events
+   */
+  responseValidation(
+    stage:
+      | 'pre_serialization'
+      | 'post_serialization'
+      | 'schema_validation'
+      | 'compliance_check',
+    result: 'passed' | 'failed' | 'warning',
+    meta?: {
+      method?: string;
+      requestId?: string;
+      validationErrors?: string[];
+      sanitizationApplied?: boolean;
+      duration?: number;
+      responseSize?: number;
+      schemaVersion?: string;
+    }
+  ): void {
+    const level =
+      result === 'failed' ? 'error' : result === 'warning' ? 'warn' : 'debug';
+
+    this[level](`Response validation ${stage}`, {
+      stage,
+      result,
+      ...meta,
+    });
+  }
 }
 
 /**

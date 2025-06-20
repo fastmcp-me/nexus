@@ -1,3 +1,8 @@
+import {
+  JsonRpcValidator,
+  createResponseValidationMiddleware,
+} from './json-rpc-validator.js';
+
 import { logger } from './logger.js';
 
 export interface JSONValidationResult {
@@ -29,13 +34,18 @@ export class JSONValidator {
     options: SafeSerializationOptions = {}
   ): JSONValidationResult {
     const { fallback = true, sanitize = true } = options;
+    const startTime = Date.now();
 
     try {
       // Check if we need fallback serialization by detecting problematic types
       const needsFallback = this.needsFallbackSerialization(value, 0);
 
       if (needsFallback && fallback) {
-        logger.debug('Using fallback serialization for problematic data types');
+        logger.jsonSerialization('serialize', true, {
+          dataType: typeof value,
+          fallbackUsed: true,
+          duration: Date.now() - startTime,
+        });
         return this.fallbackSerialization(value);
       }
 
@@ -51,8 +61,11 @@ export class JSONValidator {
         }
 
         if (seen.has(val)) {
-          logger.warn('Circular reference detected in JSON serialization', {
-            key,
+          logger.jsonSerialization('serialize', false, {
+            dataType: typeof val,
+            circularRefs: true,
+            error: 'Circular reference detected',
+            duration: Date.now() - startTime,
           });
           if (fallback) {
             return '[Circular Reference]';
@@ -72,9 +85,11 @@ export class JSONValidator {
         jsonString = this.sanitizeJSON(jsonString);
 
         if (jsonString.length !== originalLength) {
-          logger.debug('JSON sanitization applied', {
-            originalLength,
-            sanitizedLength: jsonString.length,
+          logger.jsonSerialization('serialize', true, {
+            dataType: typeof value,
+            sanitized: true,
+            dataSize: originalLength,
+            duration: Date.now() - startTime,
           });
         }
       }
@@ -82,14 +97,23 @@ export class JSONValidator {
       // Validate the result with round-trip test
       const validationResult = this.validateJSON(jsonString);
       if (!validationResult.success) {
+        logger.jsonSerialization('validate', false, {
+          dataType: typeof value,
+          error: validationResult.error,
+          duration: Date.now() - startTime,
+        });
         if (fallback) {
-          logger.warn('JSON validation failed, using fallback serialization', {
-            error: validationResult.error,
-          });
           return this.fallbackSerialization(value);
         }
         return validationResult;
       }
+
+      logger.jsonSerialization('serialize', true, {
+        dataType: typeof value,
+        dataSize: jsonString.length,
+        sanitized: sanitize,
+        duration: Date.now() - startTime,
+      });
 
       return {
         success: true,
@@ -97,9 +121,10 @@ export class JSONValidator {
         sanitized: sanitize,
       };
     } catch (error) {
-      logger.error('JSON serialization failed', {
+      logger.jsonSerialization('serialize', false, {
+        dataType: typeof value,
         error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
+        duration: Date.now() - startTime,
       });
 
       if (fallback) {
@@ -339,36 +364,90 @@ export class JSONValidator {
    * Middleware function to wrap MCP responses with JSON validation
    */
   static wrapMCPResponse<T>(response: T): T {
+    const startTime = Date.now();
+
     try {
-      // Validate that the response can be serialized
-      const validation = this.safeStringify(response, { fallback: false });
+      // First validate JSON-RPC 2.0 compliance
+      const validatedResponse =
+        JsonRpcValidator.validateAndSanitizeResponse(response);
+
+      // Then validate that the response can be serialized
+      const validation = this.safeStringify(validatedResponse, {
+        fallback: false,
+      });
 
       if (!validation.success) {
-        logger.error('MCP response validation failed', {
-          error: validation.error,
-          response: typeof response,
+        logger.responseValidation('post_serialization', 'failed', {
+          validationErrors: [validation.error || 'Serialization failed'],
+          duration: Date.now() - startTime,
+          responseSize: JSON.stringify(response).length,
         });
 
         // Return a safe error response instead
-        return {
-          error: {
-            code: -32603,
-            message: 'Internal server error: Response serialization failed',
-            data: validation.error,
-          },
-        } as T;
+        return JsonRpcValidator.createErrorResponse(
+          null,
+          -32603,
+          'Internal server error: Response serialization failed',
+          validation.error
+        ) as T;
       }
 
-      return response;
-    } catch (error) {
-      logger.error('MCP response wrapping failed', { error });
+      logger.responseValidation('post_serialization', 'passed', {
+        duration: Date.now() - startTime,
+        responseSize: validation.data?.length || 0,
+        sanitizationApplied: validation.sanitized,
+      });
 
-      return {
-        error: {
-          code: -32603,
-          message: 'Internal server error: Response processing failed',
-        },
-      } as T;
+      return validatedResponse as T;
+    } catch (error) {
+      logger.responseValidation('post_serialization', 'failed', {
+        validationErrors: [
+          error instanceof Error ? error.message : String(error),
+        ],
+        duration: Date.now() - startTime,
+      });
+
+      return JsonRpcValidator.createErrorResponse(
+        null,
+        -32603,
+        'Internal server error: Response processing failed'
+      ) as T;
+    }
+  }
+
+  /**
+   * Enhanced MCP response wrapper with pre-transmission validation
+   */
+  static wrapMCPResponseWithValidation<T>(response: T): T {
+    const startTime = Date.now();
+    const validationMiddleware = createResponseValidationMiddleware();
+
+    try {
+      // Apply response validation middleware
+      const validatedResponse = validationMiddleware(response);
+
+      // Apply JSON validation
+      const finalResponse = this.wrapMCPResponse(validatedResponse);
+
+      logger.mcpProtocol('response', undefined, {
+        duration: Date.now() - startTime,
+        responseSize: JSON.stringify(finalResponse).length,
+        validationStatus: 'passed',
+      });
+
+      return finalResponse as unknown as T;
+    } catch (error) {
+      logger.mcpProtocol('error', undefined, {
+        duration: Date.now() - startTime,
+        error: error instanceof Error ? error.message : String(error),
+        validationStatus: 'failed',
+      });
+
+      return JsonRpcValidator.createErrorResponse(
+        null,
+        -32603,
+        'Internal server error: Response validation failed'
+      ) as unknown as T;
     }
   }
 }
