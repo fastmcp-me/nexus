@@ -93,7 +93,7 @@ function initializeConfiguration(): void {
 
 const server = new Server(
   {
-    name: 'openrouter-search',
+    name: 'nexus',
     version: '1.0.0',
   },
   {
@@ -139,7 +139,7 @@ server.setRequestHandler(
         tools.push({
           name: 'search',
           description:
-            'Perform AI-powered search using Perplexity models via OpenRouter. Searches the web for current information and provides comprehensive answers with sources.',
+            'Nexus AI-powered search using Perplexity models via OpenRouter. Searches the web for current information and provides comprehensive answers with sources.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -309,8 +309,9 @@ server.setRequestHandler(
         resources: [
           {
             uri: 'config://status',
-            name: 'Configuration Status',
-            description: 'Current configuration status and health information',
+            name: 'Nexus Configuration Status',
+            description:
+              'Current Nexus MCP server configuration and health information',
             mimeType: 'application/json',
           },
         ],
@@ -339,7 +340,7 @@ server.setRequestHandler(
                 available: searchTool !== null,
               },
               server: {
-                name: 'openrouter-search',
+                name: 'nexus',
                 version: '1.0.0',
                 uptime: process.uptime(),
               },
@@ -455,7 +456,7 @@ export async function createServer() {
   try {
     // Initialize configuration first
     initializeConfiguration();
-    logger.info('Starting OpenRouter Search MCP server');
+    logger.info('Starting Nexus MCP server');
 
     // Initialize search tool after configuration is loaded
     initializeSearchTool();
@@ -464,7 +465,7 @@ export async function createServer() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
 
-    logger.info('OpenRouter Search MCP server running on stdio', {
+    logger.info('Nexus MCP server running on stdio', {
       version: '1.0.0',
       config: config.getSafeConfig(),
       stdioHandler: {

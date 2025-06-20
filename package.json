@@ -1,10 +1,10 @@
 {
-  "name": "openrouter-search-mcp",
+  "name": "nexus-mcp",
   "version": "1.0.0",
-  "description": "MCP server for OpenRouter model search and discovery",
+  "description": "Nexus MCP server - Intelligent AI model search and discovery with OpenRouter integration",
   "main": "dist/index.js",
   "bin": {
-    "openrouter-search-mcp": "dist/cli.js"
+    "nexus": "dist/cli.js"
   },
   "type": "module",
   "engines": {
@@ -38,9 +38,13 @@
   },
   "keywords": [
     "mcp",
+    "nexus",
     "openrouter",
     "ai",
-    "models"
+    "models",
+    "search",
+    "discovery",
+    "model-context-protocol"
   ],
   "author": "",
   "license": "ISC",

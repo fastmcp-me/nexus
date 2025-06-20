@@ -4,7 +4,9 @@ import { createServer } from './index.js';
 
 function printUsage() {
   console.log(`
-Usage: openrouter-search-mcp [options]
+Usage: nexus [options]
+
+Nexus MCP Server - Intelligent AI model search and discovery
 
 Options:
   --stdio     Use STDIO transport (required for MCP clients)
@@ -15,13 +17,14 @@ Environment Variables:
   OPENROUTER_API_KEY    OpenRouter API key (required)
   NODE_ENV             Environment (development, production, test)
 
-Example:
-  npx openrouter-search-mcp --stdio
+Examples:
+  npx nexus-mcp --stdio
+  nexus --stdio
 `);
 }
 
 function printVersion() {
-  console.log(`openrouter-search-mcp v1.0.0`);
+  console.log(`nexus-mcp v1.0.0`);
 }
 
 async function main() {
@@ -79,7 +82,7 @@ async function main() {
     // Start the MCP server
     await createServer();
   } catch (error) {
-    console.error('Failed to start OpenRouter Search MCP server:', error);
+    console.error('Failed to start Nexus MCP server:', error);
     process.exit(1);
   }
 }

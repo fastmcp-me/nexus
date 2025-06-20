@@ -128,7 +128,7 @@ describe('SearchTool', () => {
         >;
       expect(MockClient).toHaveBeenCalledWith({
         apiKey: mockApiKey,
-        userAgent: 'openrouter-search-mcp/1.0.0',
+        userAgent: 'nexus-mcp/1.0.0',
         timeout: 30000,
         maxRetries: 3,
       });

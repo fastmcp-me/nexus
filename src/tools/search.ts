@@ -66,7 +66,7 @@ export class SearchTool {
 
     this.client = new OpenRouterClient({
       apiKey,
-      userAgent: 'openrouter-search-mcp/1.0.0',
+      userAgent: 'nexus-mcp/1.0.0',
       timeout: this.config.getTimeoutMs(),
       maxRetries: 3,
     });

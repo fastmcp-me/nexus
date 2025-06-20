@@ -46,9 +46,9 @@ export class OpenRouterClient {
     this.defaultHeaders = {
       Authorization: `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
-      'User-Agent': config.userAgent || 'openrouter-search/1.0.0',
-      'HTTP-Referer': 'https://github.com/anthropics/openrouter-search',
-      'X-Title': 'OpenRouter Search MCP',
+      'User-Agent': config.userAgent || 'nexus-mcp/1.0.0',
+      'HTTP-Referer': 'https://github.com/anthropics/nexus-mcp',
+      'X-Title': 'Nexus Search MCP',
     };
   }
 

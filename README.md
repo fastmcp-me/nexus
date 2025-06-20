@@ -1,6 +1,6 @@
-# OpenRouter Search MCP Server
+# Nexus MCP Server
 
-A Model Context Protocol (MCP) server that provides AI-powered search capabilities using Perplexity models via OpenRouter. This server integrates with Claude Code, Cursor, and other MCP-compatible clients to provide real-time web search functionality.
+Nexus is a powerful Model Context Protocol (MCP) server that provides intelligent AI model search and discovery using OpenRouter integration. This server seamlessly integrates with Claude Code, Cursor, and other MCP-compatible clients to provide real-time web search functionality powered by advanced AI models.
 
 ## Features
 
@@ -26,11 +26,11 @@ A Model Context Protocol (MCP) server that provides AI-powered search capabiliti
 No build steps, no dependencies, no setup required:
 
 ```bash
-# Set your API key
+# Set your OpenRouter API key
 export OPENROUTER_API_KEY=your-api-key-here
 
 # Run the server instantly
-npx openrouter-search-mcp --stdio
+npx nexus-mcp --stdio
 ```
 
 That's it! The server is now running and ready for MCP client connections.
@@ -39,13 +39,13 @@ That's it! The server is now running and ready for MCP client connections.
 
 ```bash
 # Test the CLI help
-npx openrouter-search-mcp --help
+npx nexus-mcp --help
 
 # Test the version
-npx openrouter-search-mcp --version
+npx nexus-mcp --version
 
 # Run with your API key
-OPENROUTER_API_KEY=your-key npx openrouter-search-mcp --stdio
+OPENROUTER_API_KEY=your-key npx nexus-mcp --stdio
 ```
 
 ## Alternative: Local Development Installation
@@ -55,8 +55,8 @@ For local development or customization:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/openrouter-search.git
-cd openrouter-search
+git clone https://github.com/your-username/nexus-mcp.git
+cd nexus-mcp
 ```
 
 2. Install dependencies:
@@ -104,9 +104,9 @@ Add this server to your Claude Code MCP settings:
 ```json
 {
   "mcpServers": {
-    "openrouter-search": {
+    "nexus": {
       "command": "npx",
-      "args": ["openrouter-search-mcp", "--stdio"],
+      "args": ["nexus-mcp", "--stdio"],
       "env": {
         "OPENROUTER_API_KEY": "your-api-key-here"
       }
@@ -127,9 +127,9 @@ Configure the server in Cursor's MCP settings:
 
 2. Add a new server with:
 
-   - **Name**: `openrouter-search`
+   - **Name**: `nexus`
    - **Command**: `npx`
-   - **Args**: `["openrouter-search-mcp", "--stdio"]`
+   - **Args**: `["nexus-mcp", "--stdio"]`
    - **Environment Variables**:
      - `OPENROUTER_API_KEY`: `your-api-key-here`
 
@@ -141,7 +141,7 @@ For any MCP-compatible client, use these connection details:
 
 - **Transport**: stdio
 - **Command**: `npx`
-- **Args**: `["openrouter-search-mcp", "--stdio"]`
+- **Args**: `["nexus-mcp", "--stdio"]`
 - **Environment Variables**: `OPENROUTER_API_KEY=your-api-key-here`
 
 ### Alternative: Local Installation
@@ -151,9 +151,9 @@ If you prefer using a local installation (after following the local development 
 ```json
 {
   "mcpServers": {
-    "openrouter-search": {
+    "nexus": {
       "command": "node",
-      "args": ["/path/to/openrouter-search/dist/cli.js", "--stdio"],
+      "args": ["/path/to/nexus-mcp/dist/cli.js", "--stdio"],
       "env": {
         "OPENROUTER_API_KEY": "your-api-key-here"
       }
@@ -243,7 +243,7 @@ The server provides a configuration status resource at `config://status` that sh
 - Ensure Node.js 16+ is installed: `node --version`
 - Update npm: `npm install -g npm@latest`
 
-**"Cannot find package 'openrouter-search-mcp'"**
+**"Cannot find package 'nexus-mcp'"**
 
 - The package may not be published yet. Use local installation instead
 - Verify network connectivity for npm registry access
@@ -256,7 +256,7 @@ The server provides a configuration status resource at `config://status` that sh
 
 **"Permission denied" errors with NPX**
 
-- Try: `npx --yes openrouter-search-mcp --stdio`
+- Try: `npx --yes nexus-mcp --stdio`
 - Or set npm permissions: `npm config set user 0 && npm config set unsafe-perm true`
 
 ### Common Issues
@@ -343,7 +343,7 @@ This server uses OpenRouter's API, which charges based on token usage. Costs var
 
 - [OpenRouter Documentation](https://openrouter.ai/docs)
 - [Model Context Protocol Specification](https://modelcontextprotocol.io)
-- [Report Issues](https://github.com/your-username/openrouter-search/issues)
+- [Report Issues](https://github.com/your-username/nexus-mcp/issues)
 
 ## License
 
