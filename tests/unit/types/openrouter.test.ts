@@ -34,19 +34,17 @@ describe('OpenRouter Types', () => {
   describe('ChatCompletionRequest', () => {
     it('should accept minimal request structure', () => {
       const request: ChatCompletionRequest = {
-        model: 'perplexity/llama-3.1-sonar-small-128k-online',
+        model: 'perplexity/sonar',
         messages: [{ role: 'user', content: 'Hello' }],
       };
 
-      expect(request.model).toBe(
-        'perplexity/llama-3.1-sonar-small-128k-online'
-      );
+      expect(request.model).toBe('perplexity/sonar');
       expect(request.messages).toHaveLength(1);
     });
 
     it('should accept full request structure with optional fields', () => {
       const request: ChatCompletionRequest = {
-        model: 'perplexity/llama-3.1-sonar-large-128k-online',
+        model: 'perplexity/sonar',
         messages: [
           { role: 'system', content: 'You are a helpful assistant' },
           { role: 'user', content: 'Hello' },
@@ -77,16 +75,9 @@ describe('OpenRouter Types', () => {
 
   describe('PerplexityModelId', () => {
     it('should accept valid Perplexity model IDs', () => {
-      const smallModel: PerplexityModelId =
-        'perplexity/llama-3.1-sonar-small-128k-online';
-      const largeModel: PerplexityModelId =
-        'perplexity/llama-3.1-sonar-large-128k-online';
-      const hugeModel: PerplexityModelId =
-        'perplexity/llama-3.1-sonar-huge-128k-online';
+      const model: PerplexityModelId = 'perplexity/sonar';
 
-      expect(smallModel).toBe('perplexity/llama-3.1-sonar-small-128k-online');
-      expect(largeModel).toBe('perplexity/llama-3.1-sonar-large-128k-online');
-      expect(hugeModel).toBe('perplexity/llama-3.1-sonar-huge-128k-online');
+      expect(model).toBe('perplexity/sonar');
     });
   });
 

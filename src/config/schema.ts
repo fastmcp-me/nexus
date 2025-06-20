@@ -106,11 +106,7 @@ function validateModel(value: unknown): string | null {
   if (stringError) return stringError;
 
   const model = value as string;
-  const validModels = [
-    'perplexity/llama-3.1-sonar-small-128k-online',
-    'perplexity/llama-3.1-sonar-large-128k-online',
-    'perplexity/llama-3.1-sonar-huge-128k-online',
-  ];
+  const validModels = ['perplexity/sonar'];
 
   if (!validModels.includes(model)) {
     return `Must be one of: ${validModels.join(', ')}`;
@@ -134,7 +130,7 @@ export const CONFIG_SCHEMA: ConfigSchema[] = [
     field: 'defaultModel',
     envVar: 'OPENROUTER_DEFAULT_MODEL',
     required: false,
-    defaultValue: 'perplexity/llama-3.1-sonar-small-128k-online',
+    defaultValue: 'perplexity/sonar',
     validator: validateModel,
     description: 'Default Perplexity model to use for search operations',
   },

@@ -219,7 +219,7 @@ describe('OpenRouterClient', () => {
         id: 'chatcmpl-123',
         object: 'chat.completion',
         created: Date.now(),
-        model: 'perplexity/llama-3.1-sonar-small-128k-online',
+        model: 'perplexity/sonar',
         choices: [
           {
             index: 0,
@@ -246,7 +246,7 @@ describe('OpenRouterClient', () => {
         apiKey: 'sk-or-valid-key-123456789',
       });
       const request: ChatCompletionRequest = {
-        model: 'perplexity/llama-3.1-sonar-large-128k-online',
+        model: 'perplexity/sonar',
         messages: [{ role: 'user', content: 'Hello' }],
       };
 
@@ -261,7 +261,7 @@ describe('OpenRouterClient', () => {
             Authorization: 'Bearer sk-or-valid-key-123456789',
           }),
           body: JSON.stringify({
-            model: 'perplexity/llama-3.1-sonar-large-128k-online',
+            model: 'perplexity/sonar',
             messages: [{ role: 'user', content: 'Hello' }],
             stream: false,
           }),
@@ -277,7 +277,7 @@ describe('OpenRouterClient', () => {
             id: 'test',
             object: 'chat.completion',
             created: Date.now(),
-            model: 'perplexity/llama-3.1-sonar-small-128k-online',
+            model: 'perplexity/sonar',
             choices: [],
             usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
           }),
@@ -296,9 +296,7 @@ describe('OpenRouterClient', () => {
       expect(mockFetch).toHaveBeenCalledWith(
         'https://openrouter.ai/api/v1/chat/completions',
         expect.objectContaining({
-          body: expect.stringContaining(
-            'perplexity/llama-3.1-sonar-small-128k-online'
-          ),
+          body: expect.stringContaining('perplexity/sonar'),
         })
       );
     });
@@ -377,7 +375,7 @@ describe('OpenRouterClient', () => {
         apiKey: 'sk-or-valid-key-123456789',
       });
       const request: ChatCompletionRequest = {
-        model: 'perplexity/llama-3.1-sonar-small-128k-online',
+        model: 'perplexity/sonar',
         messages: [{ role: 'user', content: 'Hello' }],
       };
 

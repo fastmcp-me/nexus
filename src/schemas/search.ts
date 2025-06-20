@@ -5,11 +5,7 @@ import type { PerplexityModelId } from '../types/openrouter';
 /**
  * Supported Perplexity models for search operations
  */
-export const SUPPORTED_MODELS: PerplexityModelId[] = [
-  'perplexity/llama-3.1-sonar-small-128k-online',
-  'perplexity/llama-3.1-sonar-large-128k-online',
-  'perplexity/llama-3.1-sonar-huge-128k-online',
-];
+export const SUPPORTED_MODELS: PerplexityModelId[] = ['perplexity/sonar'];
 
 /**
  * Zod schema for search tool input validation
@@ -28,12 +24,8 @@ export const SearchToolInputSchema = z.object({
    * Model selection (optional, defaults to small model)
    */
   model: z
-    .enum([
-      'perplexity/llama-3.1-sonar-small-128k-online',
-      'perplexity/llama-3.1-sonar-large-128k-online',
-      'perplexity/llama-3.1-sonar-huge-128k-online',
-    ])
-    .default('perplexity/llama-3.1-sonar-small-128k-online')
+    .enum(['perplexity/sonar'] as const)
+    .default('perplexity/sonar')
     .describe('Perplexity model to use for search'),
 
   /**

@@ -27,7 +27,7 @@ describe('Search Tool Integration', () => {
           id: 'chatcmpl-test-123',
           object: 'chat.completion',
           created: Math.floor(Date.now() / 1000),
-          model: 'perplexity/llama-3.1-sonar-small-128k-online',
+          model: 'perplexity/sonar',
           choices: [
             {
               index: 0,
@@ -61,7 +61,7 @@ This information reflects the current state of AI technology and its application
 
       const searchInput = {
         query: 'What are the latest developments in AI technology?',
-        model: 'perplexity/llama-3.1-sonar-small-128k-online' as const,
+        model: 'perplexity/sonar' as const,
         maxTokens: 1500,
         temperature: 0.7,
       };
@@ -215,7 +215,7 @@ For more details, see the comprehensive report at https://www.nature.com/climate
           id: 'test-sources',
           object: 'chat.completion',
           created: Math.floor(Date.now() / 1000),
-          model: 'perplexity/llama-3.1-sonar-small-128k-online',
+          model: 'perplexity/sonar',
           choices: [
             {
               index: 0,
@@ -254,7 +254,7 @@ For more details, see the comprehensive report at https://www.nature.com/climate
         json: async () => ({
           data: [
             {
-              id: 'perplexity/llama-3.1-sonar-small-128k-online',
+              id: 'perplexity/sonar',
               name: 'Llama 3.1 Sonar Small',
             },
           ],
@@ -283,7 +283,7 @@ For more details, see the comprehensive report at https://www.nature.com/climate
           id: 'perf-test',
           object: 'chat.completion',
           created: Math.floor(Date.now() / 1000),
-          model: 'perplexity/llama-3.1-sonar-small-128k-online',
+          model: 'perplexity/sonar',
           choices: [
             {
               index: 0,

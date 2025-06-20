@@ -130,7 +130,7 @@ describe('SearchTool', () => {
       id: 'test-123',
       object: 'chat.completion',
       created: 1640995200,
-      model: 'perplexity/llama-3.1-sonar-small-128k-online',
+      model: 'perplexity/sonar',
       choices: [
         {
           index: 0,
@@ -153,7 +153,7 @@ describe('SearchTool', () => {
 
       const input = {
         query: 'test query',
-        model: 'perplexity/llama-3.1-sonar-small-128k-online' as const,
+        model: 'perplexity/sonar' as const,
         maxTokens: 1000,
         temperature: 0.7,
       };
@@ -165,9 +165,7 @@ describe('SearchTool', () => {
         'This is a test response with source https://example.com'
       );
       expect(result.result?.metadata.query).toBe('test query');
-      expect(result.result?.metadata.model).toBe(
-        'perplexity/llama-3.1-sonar-small-128k-online'
-      );
+      expect(result.result?.metadata.model).toBe('perplexity/sonar');
       expect(result.requestId).toBe('test-123');
     });
 
@@ -178,7 +176,7 @@ describe('SearchTool', () => {
       await searchTool.search(input);
 
       expect(mockClient.chatCompletions).toHaveBeenCalledWith({
-        model: 'perplexity/llama-3.1-sonar-small-128k-online',
+        model: 'perplexity/sonar',
         messages: [{ role: 'user', content: 'test query' }],
         temperature: 0.7,
         max_tokens: 1000,
@@ -364,7 +362,7 @@ describe('Factory Functions', () => {
         id: 'test-123',
         object: 'chat.completion',
         created: 1640995200,
-        model: 'perplexity/llama-3.1-sonar-small-128k-online',
+        model: 'perplexity/sonar',
         choices: [
           {
             index: 0,

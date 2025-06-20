@@ -129,11 +129,7 @@ describe('Configuration Schema', () => {
       const schema = getSchemaForField('defaultModel');
       expect(schema?.validator).toBeDefined();
 
-      const validModels = [
-        'perplexity/llama-3.1-sonar-small-128k-online',
-        'perplexity/llama-3.1-sonar-large-128k-online',
-        'perplexity/llama-3.1-sonar-huge-128k-online',
-      ];
+      const validModels = ['perplexity/sonar'];
 
       for (const model of validModels) {
         const result = schema?.validator!(model);

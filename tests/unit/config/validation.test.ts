@@ -44,9 +44,7 @@ describe('Configuration Validation', () => {
       const result = validateConfiguration();
 
       expect(result.isValid).toBe(true);
-      expect(result.config?.defaultModel).toBe(
-        'perplexity/llama-3.1-sonar-small-128k-online'
-      );
+      expect(result.config?.defaultModel).toBe('perplexity/sonar');
       expect(result.config?.timeoutMs).toBe(30000);
       expect(result.config?.logLevel).toBe('info');
       expect(result.config?.baseUrl).toBe('https://openrouter.ai/api/v1');

@@ -16,7 +16,7 @@ describe('Search Types', () => {
       id: 'test-123',
       object: 'chat.completion',
       created: 1640995200,
-      model: 'perplexity/llama-3.1-sonar-small-128k-online',
+      model: 'perplexity/sonar',
       choices: [
         {
           index: 0,

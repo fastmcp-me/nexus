@@ -8,6 +8,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import winston from 'winston';
 
+import { ConfigurationManager, ConfigurationError } from './config';
 import { createSearchTool } from './tools/search';
 import { validateSearchResponse } from './types/search';
 
@@ -17,24 +18,62 @@ export * from './types';
 export * from './tools';
 export * from './schemas';
 
-// Configure logger
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.errors({ stack: true }),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({
+// Global configuration and logger
+let config: ConfigurationManager;
+let logger: winston.Logger;
+
+// Initialize configuration and logger
+function initializeConfiguration(): void {
+  try {
+    config = ConfigurationManager.getInstance();
+
+    // Configure logger with settings from configuration
+    logger = winston.createLogger({
+      level: config.getLogLevel(),
       format: winston.format.combine(
-        winston.format.colorize(),
+        winston.format.timestamp(),
+        winston.format.errors({ stack: true }),
+        winston.format.json()
+      ),
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+          ),
+          stderrLevels: ['error', 'warn', 'info', 'debug'],
+        }),
+      ],
+    });
+
+    logger.info('Configuration loaded successfully', {
+      config: config.getSafeConfig(),
+    });
+  } catch (error) {
+    // Create a basic logger for error reporting if configuration fails
+    const basicLogger = winston.createLogger({
+      level: 'error',
+      format: winston.format.combine(
+        winston.format.timestamp(),
         winston.format.simple()
       ),
-      stderrLevels: ['error', 'warn', 'info', 'debug'],
-    }),
-  ],
-});
+      transports: [new winston.transports.Console()],
+    });
+
+    if (error instanceof ConfigurationError) {
+      basicLogger.error('Configuration validation failed:', {
+        errors: error.errors,
+        warnings: error.warnings,
+      });
+    } else {
+      basicLogger.error('Failed to initialize configuration:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    throw error;
+  }
+}
 
 const server = new Server(
   {
@@ -52,19 +91,20 @@ const server = new Server(
 // Initialize search tool
 let searchTool: ReturnType<typeof createSearchTool> | null = null;
 
-// Get API key from environment
-const OPENROUTER_API_KEY =
-  process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_KEY;
-
-if (OPENROUTER_API_KEY) {
+// Initialize search tool with configuration
+function initializeSearchTool(): void {
   try {
-    searchTool = createSearchTool(OPENROUTER_API_KEY);
-    logger.info('Search tool initialized successfully');
+    const apiKey = config.getApiKey();
+    searchTool = createSearchTool(apiKey);
+    logger.info('Search tool initialized successfully', {
+      apiKey: config.getMaskedApiKey(),
+      defaultModel: config.getDefaultModel(),
+      timeout: config.getTimeoutMs(),
+    });
   } catch (error) {
     logger.error('Failed to initialize search tool', { error });
+    throw error;
   }
-} else {
-  logger.warn('OPENROUTER_API_KEY not found in environment variables');
 }
 
 // Request handlers
@@ -92,12 +132,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           model: {
             type: 'string',
             description: 'Perplexity model to use for search',
-            enum: [
-              'perplexity/llama-3.1-sonar-small-128k-online',
-              'perplexity/llama-3.1-sonar-large-128k-online',
-              'perplexity/llama-3.1-sonar-huge-128k-online',
-            ],
-            default: 'perplexity/llama-3.1-sonar-small-128k-online',
+            enum: ['perplexity/sonar'],
+            default: 'perplexity/sonar',
           },
           maxTokens: {
             type: 'number',
@@ -268,13 +304,70 @@ server.setRequestHandler(CallToolRequestSchema, async request => {
 server.setRequestHandler(ListResourcesRequestSchema, async () => {
   logger.debug('Received list resources request');
   return {
-    resources: [],
+    resources: [
+      {
+        uri: 'config://status',
+        name: 'Configuration Status',
+        description: 'Current configuration status and health information',
+        mimeType: 'application/json',
+      },
+    ],
   };
 });
 
 server.setRequestHandler(ReadResourceRequestSchema, async request => {
   logger.debug(`Received read resource request: ${request.params.uri}`);
-  throw new Error(`Resource not found: ${request.params.uri}`);
+
+  switch (request.params.uri) {
+    case 'config://status': {
+      try {
+        const status = {
+          status: 'healthy',
+          timestamp: new Date().toISOString(),
+          configuration: config ? config.getSafeConfig() : null,
+          searchTool: {
+            initialized: searchTool !== null,
+            available: searchTool !== null,
+          },
+          server: {
+            name: 'openrouter-search',
+            version: '1.0.0',
+            uptime: process.uptime(),
+          },
+        };
+
+        return {
+          contents: [
+            {
+              uri: request.params.uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(status, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        logger.error('Error generating status report', { error });
+        const errorStatus = {
+          status: 'error',
+          timestamp: new Date().toISOString(),
+          error: error instanceof Error ? error.message : String(error),
+        };
+
+        return {
+          contents: [
+            {
+              uri: request.params.uri,
+              mimeType: 'application/json',
+              text: JSON.stringify(errorStatus, null, 2),
+            },
+          ],
+        };
+      }
+    }
+
+    default:
+      throw new Error(`Resource not found: ${request.params.uri}`);
+  }
 });
 
 // Server lifecycle management
@@ -316,19 +409,44 @@ process.on('unhandledRejection', (reason, promise) => {
 
 async function main() {
   try {
+    // Initialize configuration first
+    initializeConfiguration();
     logger.info('Starting OpenRouter Search MCP server');
 
+    // Initialize search tool after configuration is loaded
+    initializeSearchTool();
+
+    // Start the MCP server
     const transport = new StdioServerTransport();
     await server.connect(transport);
 
-    logger.info('OpenRouter Search MCP server running on stdio');
+    logger.info('OpenRouter Search MCP server running on stdio', {
+      version: '1.0.0',
+      config: config.getSafeConfig(),
+    });
   } catch (error) {
-    logger.error('Failed to start server', { error });
+    // If we don't have a logger yet, create a basic one
+    const errorLogger =
+      logger ||
+      winston.createLogger({
+        level: 'error',
+        format: winston.format.simple(),
+        transports: [new winston.transports.Console()],
+      });
+
+    errorLogger.error('Failed to start server', { error });
     process.exit(1);
   }
 }
 
 main().catch(error => {
-  logger.error('Fatal error in main', { error });
+  const errorLogger =
+    logger ||
+    winston.createLogger({
+      level: 'error',
+      format: winston.format.simple(),
+      transports: [new winston.transports.Console()],
+    });
+  errorLogger.error('Fatal error in main', { error });
   process.exit(1);
 });

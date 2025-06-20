@@ -261,8 +261,7 @@ export class OpenRouterClient {
     request: ChatCompletionRequest
   ): Promise<ChatCompletionResponse> {
     // Default to Perplexity Sonar model if not specified or use a fallback
-    const defaultModel: PerplexityModelId =
-      'perplexity/llama-3.1-sonar-small-128k-online';
+    const defaultModel: PerplexityModelId = 'perplexity/sonar';
 
     const payload: ChatCompletionRequest = {
       ...request,
@@ -289,8 +288,7 @@ export class OpenRouterClient {
   async *chatCompletionsStream(
     request: ChatCompletionRequest
   ): AsyncGenerator<ChatCompletionChunk, void, unknown> {
-    const defaultModel: PerplexityModelId =
-      'perplexity/llama-3.1-sonar-small-128k-online';
+    const defaultModel: PerplexityModelId = 'perplexity/sonar';
 
     const payload: ChatCompletionRequest = {
       ...request,

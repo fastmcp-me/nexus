@@ -14,7 +14,7 @@ describe('Search Schema Validation', () => {
       const result = validateSearchInput(input);
 
       expect(result.query).toBe('test query');
-      expect(result.model).toBe('perplexity/llama-3.1-sonar-small-128k-online');
+      expect(result.model).toBe('perplexity/sonar');
       expect(result.maxTokens).toBe(1000);
       expect(result.temperature).toBe(0.7);
     });
@@ -22,7 +22,7 @@ describe('Search Schema Validation', () => {
     it('should validate with all parameters', () => {
       const input = {
         query: 'test query',
-        model: 'perplexity/llama-3.1-sonar-large-128k-online' as const,
+        model: 'perplexity/sonar' as const,
         maxTokens: 2000,
         temperature: 0.5,
       };
@@ -30,7 +30,7 @@ describe('Search Schema Validation', () => {
       const result = validateSearchInput(input);
 
       expect(result.query).toBe('test query');
-      expect(result.model).toBe('perplexity/llama-3.1-sonar-large-128k-online');
+      expect(result.model).toBe('perplexity/sonar');
       expect(result.maxTokens).toBe(2000);
       expect(result.temperature).toBe(0.5);
     });
@@ -39,7 +39,7 @@ describe('Search Schema Validation', () => {
       const input = { query: 'test query' };
       const result = validateSearchInput(input);
 
-      expect(result.model).toBe('perplexity/llama-3.1-sonar-small-128k-online');
+      expect(result.model).toBe('perplexity/sonar');
       expect(result.maxTokens).toBe(1000);
       expect(result.temperature).toBe(0.7);
     });
@@ -136,19 +136,11 @@ describe('Search Schema Validation', () => {
 
   describe('SUPPORTED_MODELS', () => {
     it('should contain expected Perplexity models', () => {
-      expect(SUPPORTED_MODELS).toContain(
-        'perplexity/llama-3.1-sonar-small-128k-online'
-      );
-      expect(SUPPORTED_MODELS).toContain(
-        'perplexity/llama-3.1-sonar-large-128k-online'
-      );
-      expect(SUPPORTED_MODELS).toContain(
-        'perplexity/llama-3.1-sonar-huge-128k-online'
-      );
+      expect(SUPPORTED_MODELS).toContain('perplexity/sonar');
     });
 
     it('should have correct number of models', () => {
-      expect(SUPPORTED_MODELS).toHaveLength(3);
+      expect(SUPPORTED_MODELS).toHaveLength(1);
     });
   });
 
@@ -156,7 +148,7 @@ describe('Search Schema Validation', () => {
     it('should parse valid input', () => {
       const input = {
         query: 'test query',
-        model: 'perplexity/llama-3.1-sonar-small-128k-online',
+        model: 'perplexity/sonar',
         maxTokens: 500,
         temperature: 0.3,
       };
