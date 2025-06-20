@@ -115,3 +115,8 @@ The project uses Task Master for development workflow management. See `.windsurf
 - Type definitions focus on chat completions and Perplexity models
 - Test coverage requirements are set to 90% across all metrics
 - Uses ES modules throughout the project
+
+## Pre-Commit Guidelines
+
+- Run pre-commit run --all-files before attempting commits - This should be run repeatedly until all tests pass before committing
+- Never run git commit --no-verify unless explicitly directed to do so. You see an issue, you fix it.
