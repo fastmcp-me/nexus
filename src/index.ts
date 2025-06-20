@@ -6,7 +6,11 @@ import {
   ListResourcesRequestSchema,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import dotenv from 'dotenv';
 import winston from 'winston';
+
+// Load environment variables from .env file
+dotenv.config();
 
 import { ConfigurationManager, ConfigurationError } from './config/index.js';
 import { createSearchTool } from './tools/search.js';

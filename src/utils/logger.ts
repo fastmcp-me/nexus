@@ -125,6 +125,8 @@ export function createLogger(options: {
             }
           )
         ),
+        // CRITICAL: Send all logs to stderr to avoid polluting stdout in MCP servers
+        stderrLevels: ['error', 'warn', 'info', 'debug', 'verbose', 'silly'],
       })
     );
   }
