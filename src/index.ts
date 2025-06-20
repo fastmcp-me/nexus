@@ -524,7 +524,7 @@ export async function createServer() {
 async function main() {
   try {
     await createServer();
-  } catch (_error) {
+  } catch {
     process.exit(1);
   }
 }

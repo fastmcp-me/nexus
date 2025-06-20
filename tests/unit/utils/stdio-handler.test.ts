@@ -12,7 +12,7 @@ import {
 describe('StdioHandler', () => {
   let handler: StdioHandler;
   let mockOutput: PassThrough;
-  let mockInput: PassThrough;
+  let _mockInput: PassThrough;
 
   beforeEach(() => {
     handler = new StdioHandler({
@@ -22,7 +22,7 @@ describe('StdioHandler', () => {
       chunkSize: 1024, // 1KB for testing
     });
     mockOutput = new PassThrough();
-    mockInput = new PassThrough();
+    _mockInput = new PassThrough();
   });
 
   afterEach(async () => {

@@ -382,9 +382,13 @@ export class StdioHandler {
    * Reset metrics counters
    */
   resetMetrics(): void {
-    Object.keys(this.metrics).forEach(key => {
-      (this.metrics as any)[key] = 0;
-    });
+    this.metrics.messagesSent = 0;
+    this.metrics.messagesReceived = 0;
+    this.metrics.bytesTransmitted = 0;
+    this.metrics.bytesReceived = 0;
+    this.metrics.errors = 0;
+    this.metrics.timeouts = 0;
+    this.metrics.largeMessages = 0;
   }
 
   /**

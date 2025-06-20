@@ -4,21 +4,53 @@ A Model Context Protocol (MCP) server that provides AI-powered search capabiliti
 
 ## Features
 
+- **Zero-Install Setup**: Run instantly with `npx` - no installation or build steps required
 - **AI-Powered Search**: Uses Perplexity Sonar models for intelligent web search with citations
 - **Real-time Results**: Searches current web content and provides up-to-date information
 - **Source Citations**: Provides source URLs and metadata for search results
 - **Configurable Parameters**: Adjust search models, token limits, temperature, and more
 - **Error Handling**: Comprehensive error handling with retry logic and graceful degradation
-- **Logging**: Structured logging for debugging and monitoring
+- **Production Ready**: Bundled distribution with zero dependencies
 
-## Quick Start
+## Quick Start with NPX (Recommended)
+
+**🚀 Zero-install setup - Ready in 30 seconds!**
 
 ### Prerequisites
 
 - Node.js 16 or higher
 - An OpenRouter API key (get one at [OpenRouter](https://openrouter.ai))
 
-### Installation
+### Zero-Config Installation
+
+No build steps, no dependencies, no setup required:
+
+```bash
+# Set your API key
+export OPENROUTER_API_KEY=your-api-key-here
+
+# Run the server instantly
+npx openrouter-search-mcp --stdio
+```
+
+That's it! The server is now running and ready for MCP client connections.
+
+### Testing the NPX Installation
+
+```bash
+# Test the CLI help
+npx openrouter-search-mcp --help
+
+# Test the version
+npx openrouter-search-mcp --version
+
+# Run with your API key
+OPENROUTER_API_KEY=your-key npx openrouter-search-mcp --stdio
+```
+
+## Alternative: Local Development Installation
+
+For local development or customization:
 
 1. Clone the repository:
 
@@ -41,29 +73,25 @@ npm run build
 
 4. Configure your OpenRouter API key:
 
-   **For local development/testing:**
+```bash
+# Copy the example environment file
+cp .env.example .env
 
-   ```bash
-   # Copy the example environment file
-   cp .env.example .env
+# Edit .env and add your actual API key
+# OPENROUTER_API_KEY=your-api-key-here
+```
 
-   # Edit .env and add your actual API key
-   # OPENROUTER_API_KEY=your-api-key-here
-   ```
-
-   **For MCP client integration:** You'll provide the API key directly in your MCP client configuration (see Integration section below).
-
-### Testing the Server
-
-Test the server standalone:
+5. Test the server:
 
 ```bash
 npm start
 ```
 
-The server will start and wait for MCP protocol messages on stdin/stdout.
-
 ## Integration with MCP Clients
+
+### 🚀 Quick Setup with NPX (Recommended)
+
+The easiest way to integrate with any MCP client is using NPX:
 
 ### Claude Code
 
@@ -71,14 +99,14 @@ Add this server to your Claude Code MCP settings:
 
 1. Open your MCP settings file (usually `~/.claude/mcp_settings.json`)
 
-2. Add the server configuration:
+2. Add the server configuration using NPX:
 
 ```json
 {
   "mcpServers": {
     "openrouter-search": {
-      "command": "node",
-      "args": ["/path/to/openrouter-search/dist/index.js"],
+      "command": "npx",
+      "args": ["openrouter-search-mcp", "--stdio"],
       "env": {
         "OPENROUTER_API_KEY": "your-api-key-here"
       }
@@ -89,6 +117,8 @@ Add this server to your Claude Code MCP settings:
 
 3. Restart Claude Code
 
+**That's it!** No installation, no build steps, no path configuration required.
+
 ### Cursor
 
 Configure the server in Cursor's MCP settings:
@@ -98,8 +128,8 @@ Configure the server in Cursor's MCP settings:
 2. Add a new server with:
 
    - **Name**: `openrouter-search`
-   - **Command**: `node`
-   - **Args**: `["/path/to/openrouter-search/dist/index.js"]`
+   - **Command**: `npx`
+   - **Args**: `["openrouter-search-mcp", "--stdio"]`
    - **Environment Variables**:
      - `OPENROUTER_API_KEY`: `your-api-key-here`
 
@@ -107,11 +137,30 @@ Configure the server in Cursor's MCP settings:
 
 ### Other MCP Clients
 
-For other MCP-compatible clients, use these connection details:
+For any MCP-compatible client, use these connection details:
 
 - **Transport**: stdio
-- **Command**: `node /path/to/openrouter-search/dist/index.js`
-- **Environment Variables**: Add `OPENROUTER_API_KEY` in your client's environment configuration
+- **Command**: `npx`
+- **Args**: `["openrouter-search-mcp", "--stdio"]`
+- **Environment Variables**: `OPENROUTER_API_KEY=your-api-key-here`
+
+### Alternative: Local Installation
+
+If you prefer using a local installation (after following the local development setup):
+
+```json
+{
+  "mcpServers": {
+    "openrouter-search": {
+      "command": "node",
+      "args": ["/path/to/openrouter-search/dist/cli.js", "--stdio"],
+      "env": {
+        "OPENROUTER_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
 
 ## Usage
 
@@ -191,27 +240,60 @@ The server provides a configuration status resource at `config://status` that sh
 
 ## Troubleshooting
 
+### NPX-Specific Issues
+
+**"npx: command not found"**
+
+- Ensure Node.js 16+ is installed: `node --version`
+- Update npm: `npm install -g npm@latest`
+
+**"Cannot find package 'openrouter-search-mcp'"**
+
+- The package may not be published yet. Use local installation instead
+- Verify network connectivity for npm registry access
+
+**NPX takes a long time to start**
+
+- This is normal on first run as NPX downloads the package
+- Subsequent runs will be faster due to caching
+- For faster startup, use local installation instead
+
+**"Permission denied" errors with NPX**
+
+- Try: `npx --yes openrouter-search-mcp --stdio`
+- Or set npm permissions: `npm config set user 0 && npm config set unsafe-perm true`
+
 ### Common Issues
 
 **"Search functionality is not available"**
 
 - Ensure `OPENROUTER_API_KEY` environment variable is set
 - Verify your API key is valid at [OpenRouter](https://openrouter.ai)
+- Check the server logs for initialization errors
 
 **"Authentication failed: Invalid API key"**
 
-- Double-check your API key
+- Double-check your API key format and validity
 - Ensure the key has sufficient credits/permissions
+- Test the key directly at OpenRouter dashboard
 
 **"Rate limit exceeded"**
 
-- Wait for the rate limit to reset
-- Consider upgrading your OpenRouter plan
+- Wait for the rate limit to reset (usually 1 minute)
+- Consider upgrading your OpenRouter plan for higher limits
+- Monitor usage in your OpenRouter dashboard
 
 **Connection timeouts**
 
 - Check your internet connection
 - The server will automatically retry failed requests
+- Increase timeout if needed: `OPENROUTER_TIMEOUT_MS=60000`
+
+**MCP client can't connect to server**
+
+- Verify the `--stdio` flag is included in your MCP configuration
+- Check that Node.js 16+ is available in your MCP client's environment
+- Ensure the API key is properly set in the environment variables
 
 ### Debug Logging
 
