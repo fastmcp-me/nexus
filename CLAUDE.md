@@ -118,5 +118,109 @@ The project uses Task Master for development workflow management. See `.windsurf
 
 ## Pre-Commit Guidelines
 
-- Run pre-commit run --all-files before attempting commits - This should be run repeatedly until all tests pass before committing
-- Never run git commit --no-verify unless explicitly directed to do so. You see an issue, you fix it.
+- Run `pre-commit run --all-files` before attempting commits - This should be run repeatedly until all tests pass before committing
+- Never run `git commit --no-verify` unless explicitly directed to do so. You see an issue, you fix it.
+
+## Single Test Execution
+
+To run a specific test file during development:
+
+```bash
+# Run a specific test file
+npm test -- tests/unit/clients/openrouter.test.ts
+
+# Run tests matching a pattern
+npm test -- --grep "OpenRouter"
+
+# Run tests in watch mode for specific file
+npm run test:watch -- tests/unit/tools/search.test.ts
+```
+
+## Configuration and Environment
+
+### Environment Variables
+
+The project uses environment variables for configuration:
+
+- `OPENROUTER_API_KEY` - Required for OpenRouter API access
+- `NODE_ENV` - Environment setting (development, production, test)
+- Log levels and other settings are managed through the configuration system
+
+### Configuration Architecture
+
+The project uses a sophisticated configuration system in `src/config/`:
+
+- **Schema validation** - Comprehensive environment validation using JSON schema
+- **Type safety** - Full TypeScript typing for all configuration options
+- **Logging integration** - Structured logging with Winston, configured via config
+- **Error handling** - Detailed configuration error reporting with validation feedback
+
+## MCP Server Architecture Details
+
+### Request Flow
+
+1. **Initialization**: Configuration → Logger setup → Search tool initialization
+2. **Tool Registration**: Search tool and legacy search_models tool registered
+3. **Request Handling**: Structured request/response with comprehensive error handling
+4. **Resource Management**: Configuration status endpoint for health monitoring
+
+### Error Handling Strategy
+
+- **Structured errors** - Custom error classes for different failure modes
+- **Graceful degradation** - Server continues running even if search tool fails to initialize
+- **Comprehensive logging** - All errors logged with context and metadata
+- **User-friendly responses** - Clear error messages returned to MCP clients
+
+### Search Tool Implementation
+
+- **OpenRouter integration** - Full client with retry logic and rate limiting
+- **Response validation** - Schema validation for all search responses
+- **Metadata tracking** - Performance metrics, token usage, source counts
+- **Flexible parameters** - Model selection, token limits, temperature control
+
+## Development Workflow Integration
+
+### Task Master Commands
+
+This project integrates with Task Master for workflow management. Key commands available in this project:
+
+```bash
+# Initialize Task Master project structure
+task-master init
+
+# View current tasks and status
+task-master list
+
+# Get next task to work on
+task-master next
+
+# Mark task as completed
+task-master set-status --id=<id> --status=done
+
+# Expand complex tasks into subtasks
+task-master expand --id=<id> --research
+```
+
+See `.windsurfrules` for complete Task Master workflow documentation.
+
+## Testing Strategy
+
+### Test Organization
+
+- **Unit tests** - Individual component testing with mocking
+- **Integration tests** - End-to-end MCP server testing
+- **Fixtures** - Structured test data and mock responses
+- **Coverage requirements** - 90% threshold across all metrics
+
+### Mock Strategy
+
+- **MSW** for HTTP API mocking
+- **Vitest mocking** for module dependencies
+- **Structured mocks** - Organized in `tests/utils/mocks/`
+
+### Running Tests
+
+- Use `npm test` for single run with coverage checking
+- Use `npm run test:watch` for development with file watching
+- Use `npm run test:ui` for visual test interface
+- Integration tests: `npm run test:integration`
