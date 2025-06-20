@@ -70,7 +70,7 @@
         "id": 2,
         "title": "Development Tooling and Code Quality Setup",
         "description": "Configure ESLint flat config, Prettier, and pre-commit hooks for code quality",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           1
         ],
@@ -146,7 +146,7 @@
           1,
           2
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -154,7 +154,7 @@
             "description": "Install Vitest testing framework along with UI tools and mocking libraries required for comprehensive testing setup",
             "dependencies": [],
             "details": "Install @vitest/ui for test visualization, @vitest/coverage-v8 for coverage reporting, vitest for the core framework, and msw (Mock Service Worker) for API mocking. Also install @types/node for TypeScript support in test files.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify installation by running basic vitest command and checking package.json dependencies"
           },
           {
@@ -165,7 +165,7 @@
               1
             ],
             "details": "Create vitest.config.ts with defineConfig, set test environment to 'node', configure TypeScript paths, enable coverage with v8 provider, set coverage threshold to >90%, and configure test file patterns for .test.ts and .spec.ts files.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run vitest --config to validate configuration loads without errors"
           },
           {
@@ -176,7 +176,7 @@
               2
             ],
             "details": "Create tests/ directory with subdirectories: tests/unit/ for component and function tests, tests/integration/ for API and workflow tests, tests/fixtures/ for test data, and tests/utils/ for test utilities. Add index files to export common test helpers.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Create sample test files in each directory to verify structure and imports work correctly"
           },
           {
@@ -187,7 +187,7 @@
               3
             ],
             "details": "Configure coverage to include src/ directory, exclude test files and node_modules, generate HTML and JSON reports, set branch/function/line coverage thresholds to 90%. Add npm scripts for 'test', 'test:watch', 'test:ui', 'test:coverage', and 'test:integration'.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run coverage command to verify reports generate correctly and thresholds are enforced"
           },
           {
@@ -198,8 +198,17 @@
               4
             ],
             "details": "Create mock factories in tests/utils/mocks/ for OpenRouter API responses, MCP protocol messages, and common data structures. Build test utilities for setup/teardown, assertion helpers, and async testing patterns. Include TypeScript types for all mocks and utilities.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write integration tests using the mock factories to verify they properly simulate real API and protocol interactions"
+          },
+          {
+            "id": 6,
+            "title": "Vitest Pre-commit hook",
+            "description": "add unit test to pre-commit hook for files that change as part of a commit",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 3
           }
         ]
       },
@@ -685,7 +694,7 @@
     ],
     "metadata": {
       "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T01:41:44.948Z",
+      "updated": "2025-06-20T01:50:43.642Z",
       "description": "Tasks for master context"
     }
   }

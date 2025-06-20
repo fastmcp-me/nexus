@@ -25,9 +25,9 @@ repos:
         files: \.(js|jsx|ts|tsx|json|css|md|yml|yaml)$
         require_serial: false
 
-      - id: typescript
-        name: TypeScript
-        entry: npm run type-check
+      - id: vitest
+        name: Vitest Tests
+        entry: npm test
         language: system
         files: \.(ts|tsx)$
         require_serial: false
