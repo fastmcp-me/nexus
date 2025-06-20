@@ -496,7 +496,7 @@
           6,
           7
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -504,7 +504,7 @@
             "description": "Create a comprehensive error type hierarchy with specific error classes for different failure scenarios including API errors, configuration errors, validation errors, and MCP protocol errors.",
             "dependencies": [],
             "details": "Implement custom error classes extending base Error class: APIError, ConfigurationError, ValidationError, MCPProtocolError, NetworkError. Each error type should include error codes, severity levels, and context information. Create error classification utility to categorize errors and determine appropriate handling strategies.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for each error type creation, error code assignment, and classification logic. Test error serialization and deserialization."
           },
           {
@@ -515,7 +515,7 @@
               1
             ],
             "details": "Configure Winston with JSON format, file and console transports, log rotation. Implement correlation ID middleware to track requests. Add log levels (error, warn, info, debug). Create logging utilities for different components with contextual information including timestamps, request IDs, user context, and error details.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test log output format, correlation ID propagation, log level filtering, and file rotation. Verify log entries contain required contextual information."
           },
           {
@@ -526,7 +526,7 @@
               1
             ],
             "details": "Create error message mapping from error codes to user-friendly messages. Implement message templates with variable substitution. Add severity indicators and suggested actions. Include error message localization framework. Create fallback messages for unknown errors.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test message mapping accuracy, template variable substitution, localization switching, and fallback message handling for unmapped errors."
           },
           {
@@ -538,7 +538,7 @@
               2
             ],
             "details": "Implement retry decorator with configurable attempts and backoff strategies. Add circuit breaker for external API calls. Create fallback mechanisms for non-critical failures. Implement timeout handling and connection pooling recovery. Add metrics collection for error rates and recovery success.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test retry logic with various failure scenarios, circuit breaker state transitions, timeout handling, and fallback mechanism activation."
           },
           {
@@ -552,7 +552,7 @@
               4
             ],
             "details": "Implement MCP error response formatting according to protocol specifications. Add error context preservation across protocol boundaries. Create error handling middleware for MCP message processing. Implement proper error serialization for protocol transmission. Add error acknowledgment and recovery coordination between client and server.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test MCP error message format compliance, error context preservation across protocol boundaries, error acknowledgment flows, and end-to-end error handling scenarios."
           }
         ]
@@ -627,67 +627,112 @@
       {
         "id": 10,
         "title": "Integration Testing and Documentation",
-        "description": "Create end-to-end integration tests and comprehensive documentation for deployment",
-        "details": "Implement integration tests that verify complete MCP server functionality with real OpenRouter API (using test API keys). Create comprehensive README.md with installation, configuration, and usage instructions. Document MCP client integration examples for Claude Desktop, Cursor, etc. Add troubleshooting guide and API reference. Create example queries and expected responses.",
-        "testStrategy": "Run integration tests against live OpenRouter API in test environment, verify documentation accuracy through manual testing, validate MCP client integration examples, and ensure all setup instructions work from clean environment.",
-        "priority": "low",
-        "dependencies": [
-          9
-        ],
+        "description": "Create end-to-end integration tests and comprehensive documentation for the npx-based distribution model, prioritizing the zero-config approach",
         "status": "pending",
+        "dependencies": [
+          9,
+          "12"
+        ],
+        "priority": "low",
+        "details": "Implement integration tests that verify complete MCP server functionality with real OpenRouter API using the npx distribution model. Create comprehensive README.md highlighting the zero-config npx approach (npx openrouter-search-mcp --stdio) as the primary installation method. Document MCP client integration examples using npx commands for Claude Desktop, Cursor, etc. Add troubleshooting guide covering npx-specific issues and API reference. Create example queries demonstrating the easy-to-run approach without build steps.",
+        "testStrategy": "Run integration tests against live OpenRouter API using npx distribution in test environment, verify documentation accuracy through manual testing with npx commands, validate MCP client integration examples using npx approach, and ensure all setup instructions work from clean environment without build requirements.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Create End-to-End Integration Test Suite",
-            "description": "Implement comprehensive integration tests that verify complete MCP server functionality with real OpenRouter API using test API keys",
+            "title": "Set up automated documentation generation system",
+            "description": "Implement automated documentation generation using tools like JSDoc, Sphinx, or similar to generate API documentation from code comments",
             "dependencies": [],
-            "details": "Set up test environment with test API keys for OpenRouter. Create integration tests covering: MCP server startup/shutdown, tool registration, real API calls to OpenRouter with various models, error handling scenarios, rate limiting, and authentication flows. Use pytest framework with async support. Mock external dependencies where appropriate but test real API integration paths.",
-            "status": "pending",
-            "testStrategy": "Run tests against live OpenRouter API with dedicated test keys, verify all MCP tools work end-to-end, test error scenarios and edge cases"
+            "details": "Configure documentation build pipeline, set up code comment standards, and integrate with CI/CD for automatic updates",
+            "status": "pending"
           },
           {
             "id": 2,
-            "title": "Create Comprehensive README Documentation",
-            "description": "Develop detailed README.md with installation, configuration, and usage instructions for the MCP server",
+            "title": "Create comprehensive API reference documentation",
+            "description": "Generate detailed API reference documentation with automated tools, including method signatures, parameters, and return values",
             "dependencies": [
               1
             ],
-            "details": "Structure README with: project overview, prerequisites, installation steps (pip install, from source), configuration guide (API keys, environment variables), basic usage examples, feature overview with code snippets. Include badges for build status, version, license. Add table of contents and clear section headers. Ensure all installation steps are tested and accurate.",
-            "status": "pending",
-            "testStrategy": "Follow installation instructions on clean environment to verify accuracy, test all provided code examples"
+            "details": "Ensure all public APIs are documented with examples, error codes, and usage patterns",
+            "status": "pending"
           },
           {
             "id": 3,
-            "title": "Document MCP Client Integration Examples",
-            "description": "Create detailed integration guides and examples for popular MCP clients including Claude Desktop, Cursor, and other compatible clients",
-            "dependencies": [
-              2
-            ],
-            "details": "Create separate documentation sections for each client: Claude Desktop configuration (claude_desktop_config.json setup), Cursor integration steps, VS Code MCP extension setup, and generic MCP client integration. Include screenshots, configuration file examples, step-by-step setup instructions, and verification steps. Document client-specific features and limitations.",
-            "status": "pending",
-            "testStrategy": "Test integration with each documented client, verify configuration examples work correctly"
+            "title": "Develop video tutorial series for basic usage",
+            "description": "Create introductory video tutorials covering installation, basic configuration, and common use cases",
+            "dependencies": [],
+            "details": "Record screen captures with narration, edit for clarity, and host on appropriate platform",
+            "status": "pending"
           },
           {
             "id": 4,
-            "title": "Create Troubleshooting Guide and API Reference",
-            "description": "Develop comprehensive troubleshooting documentation and detailed API reference for all available tools and endpoints",
+            "title": "Create advanced feature demonstration videos",
+            "description": "Produce video demonstrations showcasing advanced features, integrations, and real-world scenarios",
             "dependencies": [
               3
             ],
-            "details": "Create troubleshooting guide covering: common installation issues, API key problems, network connectivity issues, rate limiting errors, client connection problems, and debugging steps. Build API reference documenting all MCP tools with: function signatures, parameter descriptions, return types, example requests/responses, error codes. Include logging configuration and debugging tips.",
-            "status": "pending",
-            "testStrategy": "Validate all troubleshooting scenarios, test API reference examples, ensure error codes are accurate"
+            "details": "Focus on complex workflows, troubleshooting scenarios, and best practices",
+            "status": "pending"
           },
           {
             "id": 5,
-            "title": "Create Example Queries and Usage Scenarios",
-            "description": "Develop comprehensive collection of example queries, expected responses, and real-world usage scenarios to demonstrate MCP server capabilities",
+            "title": "Establish community contribution guidelines",
+            "description": "Create comprehensive guidelines for community contributions including code standards, pull request process, and issue reporting",
+            "dependencies": [],
+            "details": "Include coding conventions, testing requirements, documentation standards, and review process",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Set up contributor onboarding documentation",
+            "description": "Develop documentation to help new contributors get started, including development environment setup and project structure overview",
             "dependencies": [
-              4
+              5
             ],
-            "details": "Create examples covering: basic chat completions with different models, streaming responses, function calling scenarios, error handling examples, rate limiting demonstrations, and advanced use cases. Include expected response formats, timing information, and cost estimates. Organize examples by complexity level (beginner, intermediate, advanced) and use case (creative writing, code generation, analysis, etc.).",
-            "status": "pending",
-            "testStrategy": "Execute all example queries against live API, verify response formats match documentation, validate cost and timing estimates"
+            "details": "Create step-by-step guides for local development setup, testing procedures, and submission workflows",
+            "status": "pending"
+          },
+          {
+            "id": 7,
+            "title": "Implement automated testing for documentation",
+            "description": "Set up automated tests to verify documentation accuracy, link validity, and code example functionality",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create tests that validate documentation builds, check for broken links, and verify code examples compile and run",
+            "status": "pending"
+          },
+          {
+            "id": 8,
+            "title": "Create interactive demo environment",
+            "description": "Develop an interactive online demo or playground where users can try features without installation",
+            "dependencies": [
+              3
+            ],
+            "details": "Set up web-based environment with pre-configured examples and guided tutorials",
+            "status": "pending"
+          },
+          {
+            "id": 9,
+            "title": "Establish documentation versioning strategy",
+            "description": "Implement versioning system for documentation to maintain compatibility with different software versions",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Set up version-specific documentation branches, migration guides, and deprecation notices",
+            "status": "pending"
+          },
+          {
+            "id": 10,
+            "title": "Create community feedback and improvement process",
+            "description": "Establish processes for collecting community feedback on documentation and tutorials, and implementing improvements",
+            "dependencies": [
+              5,
+              6
+            ],
+            "details": "Set up feedback channels, regular review cycles, and metrics for measuring documentation effectiveness",
+            "status": "pending"
           }
         ]
       },
@@ -767,11 +812,27 @@
             "testStrategy": "Run the verification script to ensure all components work together. Test MCP protocol message handling with sample requests. Verify logging output is generated correctly."
           }
         ]
+      },
+      {
+        "id": 12,
+        "title": "Production Distribution Package with Zero-Install NPX Support",
+        "description": "Create a production-ready distribution package that enables users to run the MCP server via `npx openrouter-search-mcp --stdio` without any setup or build steps.",
+        "details": "Implement a complete distribution strategy following 2025 best practices: 1) Configure package.json with proper bin entry pointing to a CLI script that handles --stdio flag and initializes the MCP server with STDIO transport. 2) Setup build pipeline using esbuild or similar to create a single bundled JavaScript file with all dependencies included, targeting Node.js runtime. 3) Create CLI entry point script that parses command line arguments, sets up environment variable defaults (with override support), and launches the MCP server. 4) Configure package.json for NPX compatibility with proper main/bin fields and ensure the package can be executed directly from npm registry. 5) Bundle all dependencies to eliminate user build requirements - use tools like esbuild with --bundle flag to create self-contained distribution. 6) Implement zero-config defaults: default to STDIO transport, use sensible timeout values, provide helpful error messages for missing API keys. 7) Support environment variable overrides for OPENROUTER_API_KEY and other configuration. 8) Create comprehensive README.md with quick start section showing `npx openrouter-search-mcp --stdio` usage. 9) Setup npm publish configuration with proper files inclusion/exclusion. 10) Add prepublishOnly script to ensure clean builds before publishing.",
+        "testStrategy": "Test NPX execution in clean environment without project dependencies installed by running `npx openrouter-search-mcp --stdio` and verifying MCP server starts correctly. Validate bundled distribution by checking that no external dependencies are required at runtime. Test CLI argument parsing for --stdio flag and other potential options. Verify environment variable override functionality by testing with different OPENROUTER_API_KEY values. Test zero-config behavior by running without any environment variables and ensuring helpful error messages. Validate package.json bin configuration by testing direct execution of the CLI script. Test the complete publish/install cycle using npm pack and local installation. Verify documentation accuracy by following README instructions in a fresh environment.",
+        "status": "pending",
+        "dependencies": [
+          1,
+          5,
+          7,
+          11
+        ],
+        "priority": "medium",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T13:59:32.158Z",
+      "updated": "2025-06-20T14:20:37.416Z",
       "description": "Tasks for master context"
     }
   }

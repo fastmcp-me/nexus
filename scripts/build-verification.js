@@ -273,7 +273,7 @@ const verificationSteps = [
         import { OpenRouterClient } from './dist/src/clients/openrouter.js';
         import { validateSearchInput } from './dist/src/schemas/search.js';
         import { createSearchTool } from './dist/src/tools/search.js';
-        
+
         console.log('ES Module imports successful');
         process.exit(0);
       `;
