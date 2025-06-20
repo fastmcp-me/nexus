@@ -5,7 +5,7 @@ import type {
   ChatCompletionRequest,
   OpenRouterError,
   PerplexityModelId,
-  ChatRole
+  ChatRole,
 } from '../../../src/types/openrouter';
 
 describe('OpenRouter Types', () => {
@@ -13,7 +13,7 @@ describe('OpenRouter Types', () => {
     it('should accept valid chat message structure', () => {
       const message: ChatMessage = {
         role: 'user',
-        content: 'Hello, world!'
+        content: 'Hello, world!',
       };
 
       expect(message.role).toBe('user');
@@ -24,7 +24,7 @@ describe('OpenRouter Types', () => {
       const message: ChatMessage = {
         role: 'user',
         content: 'Hello',
-        name: 'test-user'
+        name: 'test-user',
       };
 
       expect(message.name).toBe('test-user');
@@ -35,12 +35,12 @@ describe('OpenRouter Types', () => {
     it('should accept minimal request structure', () => {
       const request: ChatCompletionRequest = {
         model: 'perplexity/llama-3.1-sonar-small-128k-online',
-        messages: [
-          { role: 'user', content: 'Hello' }
-        ]
+        messages: [{ role: 'user', content: 'Hello' }],
       };
 
-      expect(request.model).toBe('perplexity/llama-3.1-sonar-small-128k-online');
+      expect(request.model).toBe(
+        'perplexity/llama-3.1-sonar-small-128k-online'
+      );
       expect(request.messages).toHaveLength(1);
     });
 
@@ -49,12 +49,12 @@ describe('OpenRouter Types', () => {
         model: 'perplexity/llama-3.1-sonar-large-128k-online',
         messages: [
           { role: 'system', content: 'You are a helpful assistant' },
-          { role: 'user', content: 'Hello' }
+          { role: 'user', content: 'Hello' },
         ],
         temperature: 0.7,
         max_tokens: 1000,
         stream: false,
-        user: 'test-user'
+        user: 'test-user',
       };
 
       expect(request.temperature).toBe(0.7);
@@ -77,9 +77,12 @@ describe('OpenRouter Types', () => {
 
   describe('PerplexityModelId', () => {
     it('should accept valid Perplexity model IDs', () => {
-      const smallModel: PerplexityModelId = 'perplexity/llama-3.1-sonar-small-128k-online';
-      const largeModel: PerplexityModelId = 'perplexity/llama-3.1-sonar-large-128k-online';
-      const hugeModel: PerplexityModelId = 'perplexity/llama-3.1-sonar-huge-128k-online';
+      const smallModel: PerplexityModelId =
+        'perplexity/llama-3.1-sonar-small-128k-online';
+      const largeModel: PerplexityModelId =
+        'perplexity/llama-3.1-sonar-large-128k-online';
+      const hugeModel: PerplexityModelId =
+        'perplexity/llama-3.1-sonar-huge-128k-online';
 
       expect(smallModel).toBe('perplexity/llama-3.1-sonar-small-128k-online');
       expect(largeModel).toBe('perplexity/llama-3.1-sonar-large-128k-online');
@@ -93,8 +96,8 @@ describe('OpenRouter Types', () => {
         error: {
           code: 429,
           message: 'Rate limit exceeded',
-          type: 'rate_limit_error'
-        }
+          type: 'rate_limit_error',
+        },
       };
 
       expect(error.error.code).toBe(429);

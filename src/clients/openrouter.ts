@@ -3,7 +3,7 @@ import type {
   ChatCompletionResponse,
   ChatCompletionChunk,
   OpenRouterError,
-  PerplexityModelId
+  PerplexityModelId,
 } from '../types/openrouter';
 
 export interface OpenRouterClientConfig {
@@ -40,15 +40,15 @@ export class OpenRouterClient {
     this.retryConfig = {
       maxRetries: config.maxRetries || 3,
       retryDelay: config.retryDelay || 1000, // 1 second default
-      retryableStatusCodes: [429, 500, 502, 503, 504]
+      retryableStatusCodes: [429, 500, 502, 503, 504],
     };
 
     this.defaultHeaders = {
-      'Authorization': `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
       'User-Agent': config.userAgent || 'openrouter-search/1.0.0',
       'HTTP-Referer': 'https://github.com/anthropics/openrouter-search',
-      'X-Title': 'OpenRouter Search MCP'
+      'X-Title': 'OpenRouter Search MCP',
     };
   }
 
@@ -111,19 +111,25 @@ export class OpenRouterClient {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          const errorData: OpenRouterError = await response.json().catch(() => ({
-            error: {
-              code: response.status,
-              message: response.statusText,
-              type: 'http_error'
-            }
-          }));
+          const errorData: OpenRouterError = await response
+            .json()
+            .catch(() => ({
+              error: {
+                code: response.status,
+                message: response.statusText,
+                type: 'http_error',
+              },
+            }));
 
           let apiError: OpenRouterApiError;
 
           // Create specific error types based on status code
           if (response.status === 401) {
-            apiError = new AuthenticationError(errorData.error.message, response.status, errorData.error.code);
+            apiError = new AuthenticationError(
+              errorData.error.message,
+              response.status,
+              errorData.error.code
+            );
           } else if (response.status === 429) {
             // Extract retry-after header if available
             const retryAfter = response.headers.get('retry-after');
@@ -134,9 +140,18 @@ export class OpenRouterClient {
               errorData.error.code
             );
           } else if (response.status >= 500) {
-            apiError = new ServerError(errorData.error.message, response.status, errorData.error.code);
+            apiError = new ServerError(
+              errorData.error.message,
+              response.status,
+              errorData.error.code
+            );
           } else if (response.status >= 400) {
-            apiError = new ClientError(errorData.error.message, response.status, errorData.error.type, errorData.error.code);
+            apiError = new ClientError(
+              errorData.error.message,
+              response.status,
+              errorData.error.type,
+              errorData.error.code
+            );
           } else {
             apiError = new OpenRouterApiError(
               errorData.error.message,
@@ -147,12 +162,18 @@ export class OpenRouterClient {
           }
 
           // Don't retry non-retryable errors or on the last attempt
-          if (!this.isRetryableError(apiError) || attempt === this.retryConfig.maxRetries) {
+          if (
+            !this.isRetryableError(apiError) ||
+            attempt === this.retryConfig.maxRetries
+          ) {
             throw apiError;
           }
 
           lastError = apiError;
-          const delay = this.calculateBackoffDelay(attempt, this.retryConfig.retryDelay);
+          const delay = this.calculateBackoffDelay(
+            attempt,
+            this.retryConfig.retryDelay
+          );
           await this.sleep(delay);
           continue;
         }
@@ -167,7 +188,9 @@ export class OpenRouterClient {
         }
 
         if (error instanceof Error && error.name === 'AbortError') {
-          const timeoutError = new Error(`Request timeout after ${this.timeout}ms`);
+          const timeoutError = new Error(
+            `Request timeout after ${this.timeout}ms`
+          );
 
           // Don't retry timeout errors on the last attempt
           if (attempt === this.retryConfig.maxRetries) {
@@ -175,12 +198,17 @@ export class OpenRouterClient {
           }
 
           lastError = timeoutError;
-          const delay = this.calculateBackoffDelay(attempt, this.retryConfig.retryDelay);
+          const delay = this.calculateBackoffDelay(
+            attempt,
+            this.retryConfig.retryDelay
+          );
           await this.sleep(delay);
           continue;
         }
 
-        const networkError = new Error(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        const networkError = new Error(
+          `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
 
         // Don't retry network errors on the last attempt
         if (attempt === this.retryConfig.maxRetries) {
@@ -188,7 +216,10 @@ export class OpenRouterClient {
         }
 
         lastError = networkError;
-        const delay = this.calculateBackoffDelay(attempt, this.retryConfig.retryDelay);
+        const delay = this.calculateBackoffDelay(
+          attempt,
+          this.retryConfig.retryDelay
+        );
         await this.sleep(delay);
       }
     }
@@ -226,15 +257,18 @@ export class OpenRouterClient {
   /**
    * Create a chat completion using the OpenRouter API
    */
-  async chatCompletions(request: ChatCompletionRequest): Promise<ChatCompletionResponse> {
+  async chatCompletions(
+    request: ChatCompletionRequest
+  ): Promise<ChatCompletionResponse> {
     // Default to Perplexity Sonar model if not specified or use a fallback
-    const defaultModel: PerplexityModelId = 'perplexity/llama-3.1-sonar-small-128k-online';
+    const defaultModel: PerplexityModelId =
+      'perplexity/llama-3.1-sonar-small-128k-online';
 
     const payload: ChatCompletionRequest = {
       ...request,
       model: request.model || defaultModel,
       // Ensure we don't accidentally enable streaming for non-streaming requests
-      stream: request.stream || false
+      stream: request.stream || false,
     };
 
     // Validate required fields
@@ -244,7 +278,7 @@ export class OpenRouterClient {
 
     return await this.makeRequest<ChatCompletionResponse>('/chat/completions', {
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
   }
 
@@ -252,13 +286,16 @@ export class OpenRouterClient {
    * Create a streaming chat completion using the OpenRouter API
    * Returns an async generator that yields chat completion chunks
    */
-  async *chatCompletionsStream(request: ChatCompletionRequest): AsyncGenerator<ChatCompletionChunk, void, unknown> {
-    const defaultModel: PerplexityModelId = 'perplexity/llama-3.1-sonar-small-128k-online';
+  async *chatCompletionsStream(
+    request: ChatCompletionRequest
+  ): AsyncGenerator<ChatCompletionChunk, void, unknown> {
+    const defaultModel: PerplexityModelId =
+      'perplexity/llama-3.1-sonar-small-128k-online';
 
     const payload: ChatCompletionRequest = {
       ...request,
       model: request.model || defaultModel,
-      stream: true
+      stream: true,
     };
 
     // Validate required fields
@@ -279,7 +316,7 @@ export class OpenRouterClient {
         method: 'POST',
         headers: {
           ...this.defaultHeaders,
-          'Accept': 'text/event-stream',
+          Accept: 'text/event-stream',
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
@@ -292,13 +329,17 @@ export class OpenRouterClient {
           error: {
             code: response.status,
             message: response.statusText,
-            type: 'http_error'
-          }
+            type: 'http_error',
+          },
         }));
 
         // Create specific error types for streaming requests too
         if (response.status === 401) {
-          throw new AuthenticationError(errorData.error.message, response.status, errorData.error.code);
+          throw new AuthenticationError(
+            errorData.error.message,
+            response.status,
+            errorData.error.code
+          );
         } else if (response.status === 429) {
           const retryAfter = response.headers.get('retry-after');
           throw new RateLimitError(
@@ -308,9 +349,18 @@ export class OpenRouterClient {
             errorData.error.code
           );
         } else if (response.status >= 500) {
-          throw new ServerError(errorData.error.message, response.status, errorData.error.code);
+          throw new ServerError(
+            errorData.error.message,
+            response.status,
+            errorData.error.code
+          );
         } else if (response.status >= 400) {
-          throw new ClientError(errorData.error.message, response.status, errorData.error.type, errorData.error.code);
+          throw new ClientError(
+            errorData.error.message,
+            response.status,
+            errorData.error.type,
+            errorData.error.code
+          );
         } else {
           throw new OpenRouterApiError(
             errorData.error.message,
@@ -376,7 +426,9 @@ export class OpenRouterClient {
         throw new Error(`Request timeout after ${this.timeout}ms`);
       }
 
-      throw new Error(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }

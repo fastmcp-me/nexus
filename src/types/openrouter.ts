@@ -5,7 +5,12 @@
 
 export type ChatRole = 'user' | 'assistant' | 'system';
 
-export type FinishReason = 'stop' | 'length' | 'content_filter' | 'tool_calls' | null;
+export type FinishReason =
+  | 'stop'
+  | 'length'
+  | 'content_filter'
+  | 'tool_calls'
+  | null;
 
 export type PerplexityModelId =
   | 'perplexity/llama-3.1-sonar-small-128k-online'

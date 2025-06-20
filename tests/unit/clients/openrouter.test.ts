@@ -6,9 +6,12 @@ import {
   AuthenticationError,
   RateLimitError,
   ServerError,
-  ClientError
+  ClientError,
 } from '../../../src/clients/openrouter';
-import type { ChatCompletionRequest, ChatCompletionResponse } from '../../../src/types/openrouter';
+import type {
+  ChatCompletionRequest,
+  ChatCompletionResponse,
+} from '../../../src/types/openrouter';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -33,7 +36,9 @@ describe('OpenRouterClient', () => {
     });
 
     it('should throw error with missing API key', () => {
-      expect(() => new OpenRouterClient({ apiKey: '' })).toThrow('OpenRouter API key is required');
+      expect(() => new OpenRouterClient({ apiKey: '' })).toThrow(
+        'OpenRouter API key is required'
+      );
     });
 
     it('should use default base URL when not provided', () => {
@@ -46,7 +51,7 @@ describe('OpenRouterClient', () => {
     it('should use custom base URL when provided', () => {
       const client = new OpenRouterClient({
         apiKey: 'sk-or-test-key-123',
-        baseUrl: 'https://custom.api.com'
+        baseUrl: 'https://custom.api.com',
       });
 
       expect(client).toBeInstanceOf(OpenRouterClient);
@@ -59,14 +64,16 @@ describe('OpenRouterClient', () => {
       expect(headers['Authorization']).toBe('Bearer sk-or-test-key-123');
       expect(headers['Content-Type']).toBe('application/json');
       expect(headers['User-Agent']).toBe('openrouter-search/1.0.0');
-      expect(headers['HTTP-Referer']).toBe('https://github.com/anthropics/openrouter-search');
+      expect(headers['HTTP-Referer']).toBe(
+        'https://github.com/anthropics/openrouter-search'
+      );
       expect(headers['X-Title']).toBe('OpenRouter Search MCP');
     });
 
     it('should use custom user agent when provided', () => {
       const client = new OpenRouterClient({
         apiKey: 'sk-or-test-key-123',
-        userAgent: 'custom-agent/1.0'
+        userAgent: 'custom-agent/1.0',
       });
       const headers = client.getHeaders();
 
@@ -78,7 +85,7 @@ describe('OpenRouterClient', () => {
     it('should accept valid API key format', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ data: [] })
+        json: () => Promise.resolve({ data: [] }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
@@ -90,7 +97,9 @@ describe('OpenRouterClient', () => {
     it('should reject invalid API key format', async () => {
       const client = new OpenRouterClient({ apiKey: 'invalid-key' });
 
-      await expect(client.makeRequest('/models')).rejects.toThrow('Invalid OpenRouter API key format');
+      await expect(client.makeRequest('/models')).rejects.toThrow(
+        'Invalid OpenRouter API key format'
+      );
     });
   });
 
@@ -119,18 +128,21 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 429,
         statusText: 'Too Many Requests',
-        json: () => Promise.resolve({
-          error: {
-            code: 429,
-            message: 'Rate limit exceeded',
-            type: 'rate_limit_error'
-          }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 429,
+              message: 'Rate limit exceeded',
+              type: 'rate_limit_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
 
-      await expect(client.makeRequest('/models')).rejects.toThrow(OpenRouterApiError);
+      await expect(client.makeRequest('/models')).rejects.toThrow(
+        OpenRouterApiError
+      );
     });
 
     it('should handle network errors', async () => {
@@ -138,7 +150,9 @@ describe('OpenRouterClient', () => {
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
 
-      await expect(client.makeRequest('/models')).rejects.toThrow('Network error');
+      await expect(client.makeRequest('/models')).rejects.toThrow(
+        'Network error'
+      );
     });
 
     it.skip('should handle timeout', async () => {
@@ -151,7 +165,7 @@ describe('OpenRouterClient', () => {
     it('should return true for successful connection', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ data: [] })
+        json: () => Promise.resolve({ data: [] }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
@@ -162,8 +176,8 @@ describe('OpenRouterClient', () => {
         'https://openrouter.ai/api/v1/models',
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Authorization': 'Bearer sk-or-valid-key-123456'
-          })
+            Authorization: 'Bearer sk-or-valid-key-123456',
+          }),
         })
       );
     });
@@ -172,9 +186,10 @@ describe('OpenRouterClient', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 401,
-        json: () => Promise.resolve({
-          error: { code: 401, message: 'Unauthorized', type: 'auth_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: { code: 401, message: 'Unauthorized', type: 'auth_error' },
+          }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
@@ -191,27 +206,32 @@ describe('OpenRouterClient', () => {
         object: 'chat.completion',
         created: Date.now(),
         model: 'perplexity/llama-3.1-sonar-small-128k-online',
-        choices: [{
-          index: 0,
-          message: { role: 'assistant', content: 'Hello! How can I help you?' },
-          finish_reason: 'stop'
-        }],
+        choices: [
+          {
+            index: 0,
+            message: {
+              role: 'assistant',
+              content: 'Hello! How can I help you?',
+            },
+            finish_reason: 'stop',
+          },
+        ],
         usage: {
           prompt_tokens: 10,
           completion_tokens: 20,
-          total_tokens: 30
-        }
+          total_tokens: 30,
+        },
       };
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve(mockResponse)
+        json: () => Promise.resolve(mockResponse),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: 'perplexity/llama-3.1-sonar-large-128k-online',
-        messages: [{ role: 'user', content: 'Hello' }]
+        messages: [{ role: 'user', content: 'Hello' }],
       };
 
       const response = await client.chatCompletions(request);
@@ -222,13 +242,13 @@ describe('OpenRouterClient', () => {
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({
-            'Authorization': 'Bearer sk-or-valid-key-123456'
+            Authorization: 'Bearer sk-or-valid-key-123456',
           }),
           body: JSON.stringify({
             model: 'perplexity/llama-3.1-sonar-large-128k-online',
             messages: [{ role: 'user', content: 'Hello' }],
-            stream: false
-          })
+            stream: false,
+          }),
         })
       );
     });
@@ -236,20 +256,21 @@ describe('OpenRouterClient', () => {
     it('should use default Perplexity model when model not specified', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          id: 'test',
-          object: 'chat.completion',
-          created: Date.now(),
-          model: 'perplexity/llama-3.1-sonar-small-128k-online',
-          choices: [],
-          usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 }
-        })
+        json: () =>
+          Promise.resolve({
+            id: 'test',
+            object: 'chat.completion',
+            created: Date.now(),
+            model: 'perplexity/llama-3.1-sonar-small-128k-online',
+            choices: [],
+            usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+          }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: '', // Will be overridden by default
-        messages: [{ role: 'user', content: 'Hello' }]
+        messages: [{ role: 'user', content: 'Hello' }],
       };
 
       await client.chatCompletions(request);
@@ -257,7 +278,9 @@ describe('OpenRouterClient', () => {
       expect(mockFetch).toHaveBeenCalledWith(
         'https://openrouter.ai/api/v1/chat/completions',
         expect.objectContaining({
-          body: expect.stringContaining('perplexity/llama-3.1-sonar-small-128k-online')
+          body: expect.stringContaining(
+            'perplexity/llama-3.1-sonar-small-128k-online'
+          ),
         })
       );
     });
@@ -266,32 +289,37 @@ describe('OpenRouterClient', () => {
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: 'test-model',
-        messages: []
+        messages: [],
       };
 
-      await expect(client.chatCompletions(request)).rejects.toThrow('Messages array is required and cannot be empty');
+      await expect(client.chatCompletions(request)).rejects.toThrow(
+        'Messages array is required and cannot be empty'
+      );
     });
 
     it('should handle API error responses', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 400,
-        json: () => Promise.resolve({
-          error: {
-            code: 400,
-            message: 'Invalid request',
-            type: 'invalid_request_error'
-          }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 400,
+              message: 'Invalid request',
+              type: 'invalid_request_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: 'test-model',
-        messages: [{ role: 'user', content: 'Hello' }]
+        messages: [{ role: 'user', content: 'Hello' }],
       };
 
-      await expect(client.chatCompletions(request)).rejects.toThrow(OpenRouterApiError);
+      await expect(client.chatCompletions(request)).rejects.toThrow(
+        OpenRouterApiError
+      );
     });
   });
 
@@ -299,31 +327,34 @@ describe('OpenRouterClient', () => {
     it('should handle streaming responses', async () => {
       const mockReadableStream = {
         getReader: () => ({
-          read: vi.fn()
+          read: vi
+            .fn()
             .mockResolvedValueOnce({
               done: false,
-              value: new TextEncoder().encode('data: {"id":"test","object":"chat.completion.chunk","choices":[{"delta":{"content":"Hello"}}]}\n\n')
+              value: new TextEncoder().encode(
+                'data: {"id":"test","object":"chat.completion.chunk","choices":[{"delta":{"content":"Hello"}}]}\n\n'
+              ),
             })
             .mockResolvedValueOnce({
               done: false,
-              value: new TextEncoder().encode('data: [DONE]\n\n')
+              value: new TextEncoder().encode('data: [DONE]\n\n'),
             })
             .mockResolvedValueOnce({
-              done: true
+              done: true,
             }),
-          releaseLock: vi.fn()
-        })
+          releaseLock: vi.fn(),
+        }),
       };
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        body: mockReadableStream
+        body: mockReadableStream,
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: 'perplexity/llama-3.1-sonar-small-128k-online',
-        messages: [{ role: 'user', content: 'Hello' }]
+        messages: [{ role: 'user', content: 'Hello' }],
       };
 
       const chunks = [];
@@ -340,15 +371,20 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 400,
         headers: { get: () => null },
-        json: () => Promise.resolve({
-          error: { code: 400, message: 'Bad Request', type: 'invalid_request_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 400,
+              message: 'Bad Request',
+              type: 'invalid_request_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: 'test-model',
-        messages: [{ role: 'user', content: 'Hello' }]
+        messages: [{ role: 'user', content: 'Hello' }],
       };
 
       try {
@@ -363,14 +399,16 @@ describe('OpenRouterClient', () => {
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
       const request: ChatCompletionRequest = {
         model: 'test-model',
-        messages: []
+        messages: [],
       };
 
       try {
         const stream = client.chatCompletionsStream(request);
         await stream.next();
       } catch (error) {
-        expect((error as Error).message).toBe('Messages array is required and cannot be empty');
+        expect((error as Error).message).toBe(
+          'Messages array is required and cannot be empty'
+        );
       }
     });
   });
@@ -382,19 +420,24 @@ describe('OpenRouterClient', () => {
           ok: false,
           status: 429,
           headers: { get: () => '5' },
-          json: () => Promise.resolve({
-            error: { code: 429, message: 'Rate limit exceeded', type: 'rate_limit_error' }
-          })
+          json: () =>
+            Promise.resolve({
+              error: {
+                code: 429,
+                message: 'Rate limit exceeded',
+                type: 'rate_limit_error',
+              },
+            }),
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ data: [] })
+          json: () => Promise.resolve({ data: [] }),
         });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
         maxRetries: 1,
-        retryDelay: 1
+        retryDelay: 1,
       });
 
       const promise = client.makeRequest('/test');
@@ -410,17 +453,24 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 401,
         headers: { get: () => null },
-        json: () => Promise.resolve({
-          error: { code: 401, message: 'Unauthorized', type: 'authentication_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 401,
+              message: 'Unauthorized',
+              type: 'authentication_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
-        maxRetries: 2
+        maxRetries: 2,
       });
 
-      await expect(client.makeRequest('/test')).rejects.toThrow(AuthenticationError);
+      await expect(client.makeRequest('/test')).rejects.toThrow(
+        AuthenticationError
+      );
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
@@ -430,19 +480,24 @@ describe('OpenRouterClient', () => {
           ok: false,
           status: 500,
           headers: { get: () => null },
-          json: () => Promise.resolve({
-            error: { code: 500, message: 'Internal Server Error', type: 'server_error' }
-          })
+          json: () =>
+            Promise.resolve({
+              error: {
+                code: 500,
+                message: 'Internal Server Error',
+                type: 'server_error',
+              },
+            }),
         })
         .mockResolvedValueOnce({
           ok: true,
-          json: () => Promise.resolve({ data: [] })
+          json: () => Promise.resolve({ data: [] }),
         });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
         maxRetries: 1,
-        retryDelay: 1
+        retryDelay: 1,
       });
 
       const promise = client.makeRequest('/test');
@@ -458,15 +513,20 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 503,
         headers: { get: () => null },
-        json: () => Promise.resolve({
-          error: { code: 503, message: 'Service Unavailable', type: 'server_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 503,
+              message: 'Service Unavailable',
+              type: 'server_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
         maxRetries: 2,
-        retryDelay: 1
+        retryDelay: 1,
       });
 
       const promise = client.makeRequest('/test');
@@ -483,9 +543,14 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 401,
         headers: { get: () => null },
-        json: () => Promise.resolve({
-          error: { code: 401, message: 'Invalid API key', type: 'authentication_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 401,
+              message: 'Invalid API key',
+              type: 'authentication_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({ apiKey: 'sk-or-valid-key-123456' });
@@ -503,15 +568,22 @@ describe('OpenRouterClient', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 429,
-        headers: { get: (header: string) => header === 'retry-after' ? '60' : null },
-        json: () => Promise.resolve({
-          error: { code: 429, message: 'Rate limit exceeded', type: 'rate_limit_error' }
-        })
+        headers: {
+          get: (header: string) => (header === 'retry-after' ? '60' : null),
+        },
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 429,
+              message: 'Rate limit exceeded',
+              type: 'rate_limit_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
-        maxRetries: 0
+        maxRetries: 0,
       });
 
       try {
@@ -528,14 +600,15 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 502,
         headers: { get: () => null },
-        json: () => Promise.resolve({
-          error: { code: 502, message: 'Bad Gateway', type: 'server_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: { code: 502, message: 'Bad Gateway', type: 'server_error' },
+          }),
       });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
-        maxRetries: 0
+        maxRetries: 0,
       });
 
       try {
@@ -551,14 +624,19 @@ describe('OpenRouterClient', () => {
         ok: false,
         status: 400,
         headers: { get: () => null },
-        json: () => Promise.resolve({
-          error: { code: 400, message: 'Bad Request', type: 'invalid_request_error' }
-        })
+        json: () =>
+          Promise.resolve({
+            error: {
+              code: 400,
+              message: 'Bad Request',
+              type: 'invalid_request_error',
+            },
+          }),
       });
 
       const client = new OpenRouterClient({
         apiKey: 'sk-or-valid-key-123456',
-        maxRetries: 0
+        maxRetries: 0,
       });
 
       try {
@@ -573,7 +651,12 @@ describe('OpenRouterClient', () => {
 
 describe('OpenRouterApiError', () => {
   it('should create error with correct properties', () => {
-    const error = new OpenRouterApiError('Test error', 429, 'rate_limit_error', 429);
+    const error = new OpenRouterApiError(
+      'Test error',
+      429,
+      'rate_limit_error',
+      429
+    );
 
     expect(error.message).toBe('Test error');
     expect(error.statusCode).toBe(429);
@@ -583,17 +666,32 @@ describe('OpenRouterApiError', () => {
   });
 
   it('should identify rate limit errors', () => {
-    const error = new OpenRouterApiError('Rate limit', 429, 'rate_limit_error', 429);
+    const error = new OpenRouterApiError(
+      'Rate limit',
+      429,
+      'rate_limit_error',
+      429
+    );
     expect(error.isRateLimitError()).toBe(true);
   });
 
   it('should identify authentication errors', () => {
-    const error = new OpenRouterApiError('Unauthorized', 401, 'authentication_error', 401);
+    const error = new OpenRouterApiError(
+      'Unauthorized',
+      401,
+      'authentication_error',
+      401
+    );
     expect(error.isAuthenticationError()).toBe(true);
   });
 
   it('should identify server errors', () => {
-    const error = new OpenRouterApiError('Server error', 500, 'server_error', 500);
+    const error = new OpenRouterApiError(
+      'Server error',
+      500,
+      'server_error',
+      500
+    );
     expect(error.isServerError()).toBe(true);
   });
 });

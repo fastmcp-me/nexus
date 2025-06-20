@@ -9,12 +9,14 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 ## Development Commands
 
 ### Core Commands
+
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm run dev` - Start development server with hot reload
 - `npm run start` - Run the built server
 - `npm run clean` - Remove dist directory
 
 ### Testing
+
 - `npm test` - Run all tests once
 - `npm run test:watch` - Run tests in watch mode
 - `npm run test:ui` - Run tests with Vitest UI
@@ -22,6 +24,7 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 - `npm run test:integration` - Run only integration tests
 
 ### Code Quality
+
 - `npm run lint` - Lint code with ESLint
 - `npm run lint:fix` - Fix auto-fixable lint issues
 - `npm run format` - Format code with Prettier
@@ -33,11 +36,13 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 ### Core Components
 
 1. **MCP Server Entry Point** (`src/index.ts`)
+
    - Initializes the MCP server using `@modelcontextprotocol/sdk`
    - Sets up stdio transport for communication
    - Currently basic setup with empty capabilities
 
 2. **OpenRouter Client** (`src/clients/openrouter.ts`)
+
    - Robust HTTP client for OpenRouter API
    - Implements retry logic with exponential backoff
    - Supports both streaming and non-streaming chat completions
@@ -45,6 +50,7 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
    - API key validation and request authentication
 
 3. **Type Definitions** (`src/types/openrouter.ts`)
+
    - Complete TypeScript interfaces for OpenRouter API
    - Chat completion request/response types
    - Perplexity model type definitions
@@ -79,6 +85,7 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 ## Key Implementation Details
 
 ### OpenRouter Client Features
+
 - Supports Perplexity Sonar models by default
 - Implements retry logic for rate limits and server errors
 - Provides both streaming and non-streaming interfaces
@@ -86,12 +93,15 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 - Request timeout handling and abort controller usage
 
 ### Type Safety
+
 - Strict TypeScript configuration
 - Comprehensive type definitions for OpenRouter API
 - Proper error typing with discriminated unions
 
 ### Task Master Integration
+
 The project uses Task Master for development workflow management. See `.windsurfrules` for complete development workflow documentation including:
+
 - Task breakdown and complexity analysis
 - Dependency management
 - Status tracking commands
