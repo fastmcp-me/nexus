@@ -26,6 +26,7 @@ import {
   withMCPErrorHandling,
   validateMCPRequest,
 } from './utils/mcp-error-handler.js';
+import { stdioHandler } from './utils/stdio-handler.js';
 
 // Export our OpenRouter client and types
 export * from './clients/index.js';
@@ -442,8 +443,16 @@ async function gracefulShutdown(signal: string) {
   logger.info(`Received ${signal}, starting graceful shutdown`);
 
   try {
+    // Flush any pending STDIO operations
+    await stdioHandler.flush();
+
+    // Clean up STDIO handler resources
+    await stdioHandler.cleanup();
+
     // Close server connections
-    logger.info('Server shutdown completed');
+    logger.info('Server shutdown completed', {
+      stdioMetrics: stdioHandler.getMetrics(),
+    });
     process.exit(0);
   } catch (error) {
     logger.error('Error during shutdown', { error });
@@ -490,6 +499,10 @@ async function main() {
     logger.info('OpenRouter Search MCP server running on stdio', {
       version: '1.0.0',
       config: config.getSafeConfig(),
+      stdioHandler: {
+        options: stdioHandler.getMetrics(),
+        initialized: true,
+      },
     });
   } catch (error) {
     // If we don't have a logger yet, create a basic one

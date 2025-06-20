@@ -2,7 +2,6 @@ import {
   JsonRpcValidator,
   createResponseValidationMiddleware,
 } from './json-rpc-validator.js';
-
 import { logger } from './logger.js';
 
 export interface JSONValidationResult {

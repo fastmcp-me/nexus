@@ -150,12 +150,6 @@ describe('JsonRpcValidator', () => {
     });
 
     it('should reject notification with id', () => {
-      const invalid = {
-        jsonrpc: '2.0',
-        method: 'test',
-        id: 1,
-      };
-
       // This should be treated as a request, but if we force it as notification:
       const notification = {
         jsonrpc: '2.0',
