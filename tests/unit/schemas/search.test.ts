@@ -132,15 +132,90 @@ describe('Search Schema Validation', () => {
       expect(result.maxTokens).toBe(4000);
       expect(result.temperature).toBe(2);
     });
+
+    it('should validate new parameter ranges', () => {
+      const input = {
+        query: 'test query',
+        topP: 0.9,
+        frequencyPenalty: 1.5,
+        presencePenalty: -1.0,
+        stop: ['<|im_end|>', 'END'],
+      };
+
+      expect(() => validateSearchInput(input)).not.toThrow();
+    });
+
+    it('should reject invalid topP values', () => {
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          topP: 1.5,
+        })
+      ).toThrow('Top-p cannot exceed 1');
+
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          topP: -0.1,
+        })
+      ).toThrow('Top-p must be at least 0');
+    });
+
+    it('should reject invalid penalty values', () => {
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          frequencyPenalty: 3,
+        })
+      ).toThrow('Frequency penalty cannot exceed 2');
+
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          presencePenalty: -3,
+        })
+      ).toThrow('Presence penalty must be at least -2');
+    });
+
+    it('should validate stop sequences', () => {
+      // Valid single string
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          stop: 'STOP',
+        })
+      ).not.toThrow();
+
+      // Valid array
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          stop: ['END', 'STOP'],
+        })
+      ).not.toThrow();
+
+      // Too many stop sequences
+      expect(() =>
+        validateSearchInput({
+          query: 'test',
+          stop: ['A', 'B', 'C', 'D', 'E'],
+        })
+      ).toThrow('Maximum 4 stop sequences');
+    });
   });
 
   describe('SUPPORTED_MODELS', () => {
     it('should contain expected Perplexity models', () => {
       expect(SUPPORTED_MODELS).toContain('perplexity/sonar');
+      expect(SUPPORTED_MODELS).toContain('perplexity/sonar-small-chat');
+      expect(SUPPORTED_MODELS).toContain('perplexity/sonar-medium-chat');
+      expect(SUPPORTED_MODELS).toContain('perplexity/sonar-large-chat');
+      expect(SUPPORTED_MODELS).toContain('perplexity/sonar-small-online');
+      expect(SUPPORTED_MODELS).toContain('perplexity/sonar-medium-online');
     });
 
     it('should have correct number of models', () => {
-      expect(SUPPORTED_MODELS).toHaveLength(1);
+      expect(SUPPORTED_MODELS).toHaveLength(6);
     });
   });
 
@@ -154,7 +229,12 @@ describe('Search Schema Validation', () => {
       };
 
       const result = SearchToolInputSchema.parse(input);
-      expect(result).toEqual(input);
+      expect(result).toEqual({
+        ...input,
+        topP: 1.0,
+        frequencyPenalty: 0.0,
+        presencePenalty: 0.0,
+      });
     });
 
     it('should provide detailed error messages', () => {

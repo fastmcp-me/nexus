@@ -17,7 +17,7 @@ describe('Configuration Schema', () => {
 
     it('should have all optional fields with default values', () => {
       const optionalFields = CONFIG_SCHEMA.filter(schema => !schema.required);
-      expect(optionalFields).toHaveLength(4);
+      expect(optionalFields).toHaveLength(12);
 
       for (const field of optionalFields) {
         expect(field.defaultValue).toBeDefined();

@@ -98,6 +98,62 @@ export class ConfigurationManager {
   }
 
   /**
+   * Get the default maximum tokens for responses
+   */
+  public getDefaultMaxTokens(): number {
+    return this.config.defaultMaxTokens || 1000;
+  }
+
+  /**
+   * Get the default temperature for response generation
+   */
+  public getDefaultTemperature(): number {
+    return this.config.defaultTemperature || 0.7;
+  }
+
+  /**
+   * Get the default top_p parameter for nucleus sampling
+   */
+  public getDefaultTopP(): number {
+    return this.config.defaultTopP || 1.0;
+  }
+
+  /**
+   * Get the default frequency penalty
+   */
+  public getDefaultFrequencyPenalty(): number {
+    return this.config.defaultFrequencyPenalty || 0.0;
+  }
+
+  /**
+   * Get the default presence penalty
+   */
+  public getDefaultPresencePenalty(): number {
+    return this.config.defaultPresencePenalty || 0.0;
+  }
+
+  /**
+   * Get whether caching is enabled
+   */
+  public isCacheEnabled(): boolean {
+    return this.config.cacheEnabled !== false; // Default to true
+  }
+
+  /**
+   * Get the cache TTL in milliseconds
+   */
+  public getCacheTtl(): number {
+    return this.config.cacheTtl || 5 * 60 * 1000; // 5 minutes
+  }
+
+  /**
+   * Get the maximum cache size
+   */
+  public getCacheMaxSize(): number {
+    return this.config.cacheMaxSize || 500;
+  }
+
+  /**
    * Get the full configuration object
    */
   public getConfig(): EnvironmentConfig {
@@ -107,6 +163,14 @@ export class ConfigurationManager {
       timeoutMs: this.getTimeoutMs(),
       logLevel: this.getLogLevel(),
       baseUrl: this.getBaseUrl(),
+      defaultMaxTokens: this.getDefaultMaxTokens(),
+      defaultTemperature: this.getDefaultTemperature(),
+      defaultTopP: this.getDefaultTopP(),
+      defaultFrequencyPenalty: this.getDefaultFrequencyPenalty(),
+      defaultPresencePenalty: this.getDefaultPresencePenalty(),
+      cacheEnabled: this.isCacheEnabled(),
+      cacheTtl: this.getCacheTtl(),
+      cacheMaxSize: this.getCacheMaxSize(),
     };
   }
 
@@ -120,6 +184,14 @@ export class ConfigurationManager {
       timeoutMs: this.getTimeoutMs(),
       logLevel: this.getLogLevel(),
       baseUrl: this.getBaseUrl(),
+      defaultMaxTokens: this.getDefaultMaxTokens(),
+      defaultTemperature: this.getDefaultTemperature(),
+      defaultTopP: this.getDefaultTopP(),
+      defaultFrequencyPenalty: this.getDefaultFrequencyPenalty(),
+      defaultPresencePenalty: this.getDefaultPresencePenalty(),
+      cacheEnabled: this.isCacheEnabled(),
+      cacheTtl: this.getCacheTtl(),
+      cacheMaxSize: this.getCacheMaxSize(),
     };
   }
 

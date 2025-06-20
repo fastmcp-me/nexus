@@ -5,7 +5,14 @@ import type { PerplexityModelId } from '../types/openrouter.js';
 /**
  * Supported Perplexity models for search operations
  */
-export const SUPPORTED_MODELS: PerplexityModelId[] = ['perplexity/sonar'];
+export const SUPPORTED_MODELS: PerplexityModelId[] = [
+  'perplexity/sonar',
+  'perplexity/sonar-small-chat',
+  'perplexity/sonar-medium-chat',
+  'perplexity/sonar-large-chat',
+  'perplexity/sonar-small-online',
+  'perplexity/sonar-medium-online',
+];
 
 /**
  * Zod schema for search tool input validation
@@ -21,10 +28,17 @@ export const SearchToolInputSchema = z.object({
     .describe('The search query to process'),
 
   /**
-   * Model selection (optional, defaults to small model)
+   * Model selection (optional, defaults to sonar model)
    */
   model: z
-    .enum(['perplexity/sonar'] as const)
+    .enum([
+      'perplexity/sonar',
+      'perplexity/sonar-small-chat',
+      'perplexity/sonar-medium-chat',
+      'perplexity/sonar-large-chat',
+      'perplexity/sonar-small-online',
+      'perplexity/sonar-medium-online',
+    ] as const)
     .default('perplexity/sonar')
     .describe('Perplexity model to use for search'),
 
@@ -50,6 +64,57 @@ export const SearchToolInputSchema = z.object({
     .describe(
       'Controls randomness in the response (0 = deterministic, 2 = very random)'
     ),
+
+  /**
+   * Top-p nucleus sampling parameter (optional, 0-1 range)
+   */
+  topP: z
+    .number()
+    .min(0, 'Top-p must be at least 0')
+    .max(1, 'Top-p cannot exceed 1')
+    .default(1.0)
+    .describe(
+      'Nucleus sampling cutoff probability (0.1 = only top 10% likely tokens)'
+    ),
+
+  /**
+   * Frequency penalty to reduce repetition (optional, -2 to 2 range)
+   */
+  frequencyPenalty: z
+    .number()
+    .min(-2, 'Frequency penalty must be at least -2')
+    .max(2, 'Frequency penalty cannot exceed 2')
+    .default(0.0)
+    .describe(
+      'Penalty for repeated tokens based on frequency (-2 to 2, 0 = no penalty)'
+    ),
+
+  /**
+   * Presence penalty to encourage topic diversity (optional, -2 to 2 range)
+   */
+  presencePenalty: z
+    .number()
+    .min(-2, 'Presence penalty must be at least -2')
+    .max(2, 'Presence penalty cannot exceed 2')
+    .default(0.0)
+    .describe(
+      'Penalty for tokens that already appear (-2 to 2, 0 = no penalty)'
+    ),
+
+  /**
+   * Stop sequences to halt generation (optional)
+   */
+  stop: z
+    .union([
+      z.string().max(100, 'Stop sequence too long (max 100 characters)'),
+      z
+        .array(
+          z.string().max(100, 'Stop sequence too long (max 100 characters)')
+        )
+        .max(4, 'Maximum 4 stop sequences'),
+    ])
+    .optional()
+    .describe('String or array of strings where generation should stop'),
 });
 
 /**

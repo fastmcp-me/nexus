@@ -156,7 +156,9 @@ describe('Search Types', () => {
         Date.now()
       );
 
-      expect(result.result!.content).toBe('');
+      // With optimized formatter, invalid responses are marked as unsuccessful
+      expect(result.success).toBe(false);
+      expect(result.result).toBeUndefined();
     });
   });
 

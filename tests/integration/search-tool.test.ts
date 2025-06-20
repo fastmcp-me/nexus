@@ -4,7 +4,7 @@ import { SearchTool } from '../../src/tools/search';
 import { validateSearchResponse } from '../../src/types/search';
 
 // Mock OpenRouter API responses
-const mockApiKey = 'sk-or-test-integration-key';
+const mockApiKey = 'sk-or-test-integration-key-12345678901234';
 
 // Mock the fetch function for integration testing
 const mockFetch = vi.fn();
@@ -13,8 +13,16 @@ global.fetch = mockFetch;
 describe('Search Tool Integration', () => {
   let searchTool: SearchTool;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Set environment variable for configuration
+    process.env.OPENROUTER_API_KEY = mockApiKey;
+
+    // Reset ConfigurationManager singleton
+    const { ConfigurationManager } = await import('../../src/config/manager');
+    ConfigurationManager['instance'] = null;
+
     searchTool = new SearchTool(mockApiKey);
   });
 
@@ -112,6 +120,9 @@ This information reflects the current state of AI technology and its application
             ],
             temperature: searchInput.temperature,
             max_tokens: searchInput.maxTokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
             stream: false,
           }),
         })

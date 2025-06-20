@@ -83,7 +83,7 @@ vi.mock('winston', () => ({
 }));
 
 describe('SearchTool', () => {
-  const mockApiKey = 'sk-or-test-api-key';
+  const mockApiKey = 'sk-or-test-api-key-12345678901234';
   let searchTool: SearchTool;
   let mockClient: {
     chatCompletions: ReturnType<typeof vi.fn>;
@@ -93,6 +93,16 @@ describe('SearchTool', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+
+    // Set environment variable for configuration
+    process.env.OPENROUTER_API_KEY = mockApiKey;
+
+    // Reset ConfigurationManager singleton
+    const { ConfigurationManager } = await import(
+      '../../../src/config/manager'
+    );
+    ConfigurationManager['instance'] = null;
+
     searchTool = new SearchTool(mockApiKey);
 
     // Get the mock client instance
@@ -180,6 +190,10 @@ describe('SearchTool', () => {
         messages: [{ role: 'user', content: 'test query' }],
         temperature: 0.7,
         max_tokens: 1000,
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 0.0,
+        stop: undefined,
         stream: false,
       });
     });
@@ -295,6 +309,40 @@ describe('SearchTool', () => {
       expect(result.success).toBe(true);
       expect(result.result?.metadata.responseTime).toBeGreaterThan(90);
     });
+
+    it('should deduplicate concurrent identical requests', async () => {
+      mockClient.chatCompletions.mockImplementation(
+        () =>
+          new Promise(resolve => setTimeout(() => resolve(mockApiResponse), 50))
+      );
+
+      const input = { query: 'concurrent test query' };
+
+      // Start multiple identical requests concurrently
+      const promises = [
+        searchTool.search(input),
+        searchTool.search(input),
+        searchTool.search(input),
+      ];
+
+      const results = await Promise.all(promises);
+
+      // All should succeed and have the same result
+      expect(results[0].success).toBe(true);
+      expect(results[1].success).toBe(true);
+      expect(results[2].success).toBe(true);
+      expect(results[0].requestId).toBe(results[1].requestId);
+      expect(results[0].requestId).toBe(results[2].requestId);
+
+      // But the API should only be called once due to deduplication
+      expect(mockClient.chatCompletions).toHaveBeenCalledTimes(1);
+
+      // Check deduplication stats
+      const stats = searchTool.getDeduplicationStats();
+      expect(stats.uniqueRequests).toBe(1);
+      expect(stats.deduplicatedRequests).toBe(2);
+      expect(stats.deduplicationRatio).toBe(2 / 3);
+    });
   });
 
   describe('testConnection', () => {
@@ -336,6 +384,111 @@ describe('SearchTool', () => {
       expect(info.headers['Content-Type']).toBe('application/json');
       expect(info.headers['User-Agent']).toBe('test-agent');
       expect(info.baseUrl).toBe('https://openrouter.ai/api/v1');
+    });
+  });
+
+  describe('getDeduplicationStats', () => {
+    it('should return deduplication statistics', () => {
+      const stats = searchTool.getDeduplicationStats();
+
+      expect(stats).toHaveProperty('pendingRequests');
+      expect(stats).toHaveProperty('deduplicatedRequests');
+      expect(stats).toHaveProperty('uniqueRequests');
+      expect(stats).toHaveProperty('maxConcurrentRequests');
+      expect(stats).toHaveProperty('deduplicationRatio');
+      expect(typeof stats.pendingRequests).toBe('number');
+      expect(typeof stats.deduplicatedRequests).toBe('number');
+      expect(typeof stats.uniqueRequests).toBe('number');
+      expect(typeof stats.maxConcurrentRequests).toBe('number');
+      expect(typeof stats.deduplicationRatio).toBe('number');
+    });
+  });
+
+  describe('getCacheStats', () => {
+    it('should return cache statistics', () => {
+      const stats = searchTool.getCacheStats();
+
+      expect(stats).toHaveProperty('hits');
+      expect(stats).toHaveProperty('misses');
+      expect(stats).toHaveProperty('size');
+      expect(stats).toHaveProperty('maxSize');
+      expect(stats).toHaveProperty('hitRatio');
+      expect(typeof stats.hits).toBe('number');
+      expect(typeof stats.misses).toBe('number');
+      expect(typeof stats.size).toBe('number');
+      expect(typeof stats.maxSize).toBe('number');
+      expect(typeof stats.hitRatio).toBe('number');
+    });
+  });
+
+  describe('getPerformanceMetrics', () => {
+    const testApiResponse = {
+      id: 'metrics-test-123',
+      object: 'chat.completion' as const,
+      created: 1640995200,
+      model: 'perplexity/sonar',
+      choices: [
+        {
+          index: 0,
+          message: {
+            role: 'assistant' as const,
+            content: 'Test response for metrics with https://example.com',
+          },
+          finish_reason: 'stop' as const,
+        },
+      ],
+      usage: {
+        prompt_tokens: 10,
+        completion_tokens: 15,
+        total_tokens: 25,
+      },
+    };
+
+    it('should return performance metrics', () => {
+      const metrics = searchTool.getPerformanceMetrics();
+
+      expect(metrics).toHaveProperty('averageProcessingTime');
+      expect(metrics).toHaveProperty('averageSourceCount');
+      expect(metrics).toHaveProperty('averageContentLength');
+      expect(metrics).toHaveProperty('averageMemoryUsage');
+      expect(metrics).toHaveProperty('totalRequests');
+      expect(metrics).toHaveProperty('slowestRequest');
+      expect(metrics).toHaveProperty('fastestRequest');
+      expect(typeof metrics.averageProcessingTime).toBe('number');
+      expect(typeof metrics.averageSourceCount).toBe('number');
+      expect(typeof metrics.averageContentLength).toBe('number');
+      expect(typeof metrics.averageMemoryUsage).toBe('number');
+      expect(typeof metrics.totalRequests).toBe('number');
+    });
+
+    it('should track metrics after search operations', async () => {
+      mockClient.chatCompletions.mockResolvedValue(testApiResponse);
+
+      const input = { query: 'test query for metrics' };
+      await searchTool.search(input);
+
+      const metrics = searchTool.getPerformanceMetrics();
+
+      expect(metrics.totalRequests).toBe(1);
+      expect(metrics.averageProcessingTime).toBeGreaterThan(0);
+      expect(metrics.averageContentLength).toBeGreaterThan(0);
+      expect(metrics.slowestRequest).toBeDefined();
+      expect(metrics.fastestRequest).toBeDefined();
+    });
+
+    it('should clear performance metrics', async () => {
+      mockClient.chatCompletions.mockResolvedValue(testApiResponse);
+
+      await searchTool.search({ query: 'test query' });
+
+      let metrics = searchTool.getPerformanceMetrics();
+      expect(metrics.totalRequests).toBe(1);
+
+      searchTool.clearPerformanceMetrics();
+
+      metrics = searchTool.getPerformanceMetrics();
+      expect(metrics.totalRequests).toBe(0);
+      expect(metrics.averageProcessingTime).toBe(0);
     });
   });
 });

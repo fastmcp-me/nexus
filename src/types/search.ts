@@ -1,3 +1,8 @@
+import {
+  ResponseOptimizer,
+  formatResponseQuick,
+} from '../utils/response-optimizer.js';
+
 import type { ChatCompletionResponse, Usage } from './openrouter.js';
 
 /**
@@ -71,6 +76,7 @@ export interface SearchResponse {
 
 /**
  * Format a ChatCompletionResponse into a SearchResponse
+ * Uses optimized formatter for better performance
  */
 export function formatSearchResponse(
   apiResponse: ChatCompletionResponse,
@@ -79,35 +85,34 @@ export function formatSearchResponse(
   temperature?: number,
   maxTokens?: number
 ): SearchResponse {
-  const endTime = Date.now();
-  const responseTime = endTime - startTime;
+  // Use optimized formatter for better performance
+  return formatResponseQuick(
+    apiResponse,
+    query,
+    startTime,
+    temperature,
+    maxTokens
+  );
+}
 
-  // Extract main content from the first choice
-  const mainContent = apiResponse.choices[0]?.message?.content || '';
-
-  // Extract sources from content (basic implementation)
-  // Note: Perplexity models typically include sources in their responses
-  const sources = extractSourcesFromContent(mainContent);
-
-  const searchResult: SearchResult = {
-    content: mainContent,
-    sources,
-    metadata: {
-      model: apiResponse.model,
-      timestamp: endTime,
-      query,
-      temperature,
-      maxTokens,
-      usage: apiResponse.usage,
-      responseTime,
-    },
-  };
-
-  return {
-    success: true,
-    result: searchResult,
-    requestId: apiResponse.id,
-  };
+/**
+ * Format a ChatCompletionResponse with detailed performance metrics
+ */
+export function formatSearchResponseWithMetrics(
+  apiResponse: ChatCompletionResponse,
+  query: string,
+  startTime: number,
+  temperature?: number,
+  maxTokens?: number
+) {
+  const optimizer = ResponseOptimizer.getInstance();
+  return optimizer.formatSearchResponseOptimized(
+    apiResponse,
+    query,
+    startTime,
+    temperature,
+    maxTokens
+  );
 }
 
 /**
@@ -124,29 +129,6 @@ export function createErrorResponse(
     errorType,
     requestId,
   };
-}
-
-/**
- * Extract source information from content
- * Basic implementation - in practice, Perplexity models provide structured source info
- */
-function extractSourcesFromContent(content: string): SearchSource[] {
-  const sources: SearchSource[] = [];
-
-  // Look for URLs in the content
-  const urlRegex = /https?:\/\/[^\s\]]+/g;
-  const urls = content.match(urlRegex) || [];
-
-  // Create basic source objects
-  urls.forEach((url, index) => {
-    sources.push({
-      url,
-      title: `Source ${index + 1}`,
-      description: `Reference from ${new globalThis.URL(url).hostname}`,
-    });
-  });
-
-  return sources;
 }
 
 /**

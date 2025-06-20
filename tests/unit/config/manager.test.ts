@@ -127,6 +127,14 @@ describe('ConfigurationManager', () => {
         timeoutMs: 30000,
         logLevel: 'info',
         baseUrl: 'https://openrouter.ai/api/v1',
+        defaultMaxTokens: 1000,
+        defaultTemperature: 0.7,
+        defaultTopP: 1.0,
+        defaultFrequencyPenalty: 0.0,
+        defaultPresencePenalty: 0.0,
+        cacheEnabled: true,
+        cacheTtl: 300000,
+        cacheMaxSize: 500,
       });
     });
   });

@@ -99,6 +99,144 @@ function validateUrl(value: unknown): string | null {
 }
 
 /**
+ * Validates that a value is a valid temperature (0-2)
+ */
+function validateTemperature(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const parsed = parseFloat(value);
+    if (isNaN(parsed)) {
+      return 'Must be a valid number';
+    }
+    value = parsed;
+  }
+
+  if (typeof value !== 'number') {
+    return 'Must be a number';
+  }
+
+  if (value < 0 || value > 2) {
+    return 'Must be between 0 and 2';
+  }
+
+  return null;
+}
+
+/**
+ * Validates that a value is a valid top_p (0-1)
+ */
+function validateTopP(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const parsed = parseFloat(value);
+    if (isNaN(parsed)) {
+      return 'Must be a valid number';
+    }
+    value = parsed;
+  }
+
+  if (typeof value !== 'number') {
+    return 'Must be a number';
+  }
+
+  if (value < 0 || value > 1) {
+    return 'Must be between 0 and 1';
+  }
+
+  return null;
+}
+
+/**
+ * Validates that a value is a valid penalty (-2 to 2)
+ */
+function validatePenalty(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const parsed = parseFloat(value);
+    if (isNaN(parsed)) {
+      return 'Must be a valid number';
+    }
+    value = parsed;
+  }
+
+  if (typeof value !== 'number') {
+    return 'Must be a number';
+  }
+
+  if (value < -2 || value > 2) {
+    return 'Must be between -2 and 2';
+  }
+
+  return null;
+}
+
+/**
+ * Validates max tokens (positive integer, reasonable upper bound)
+ */
+function validateMaxTokens(value: unknown): string | null {
+  const intError = validatePositiveInteger(value);
+  if (intError) return intError;
+
+  const maxTokens = value as number;
+  if (maxTokens > 8000) {
+    return 'Maximum tokens cannot exceed 8000';
+  }
+
+  return null;
+}
+
+/**
+ * Validates boolean values from environment variables
+ */
+function validateBoolean(value: unknown): string | null {
+  if (typeof value === 'boolean') {
+    return null;
+  }
+
+  if (typeof value === 'string') {
+    const lower = value.toLowerCase();
+    if (['true', 'false', '1', '0', 'yes', 'no'].includes(lower)) {
+      return null;
+    }
+  }
+
+  return 'Must be a boolean value (true/false, 1/0, yes/no)';
+}
+
+/**
+ * Validates cache TTL (positive integer with reasonable bounds)
+ */
+function validateCacheTtl(value: unknown): string | null {
+  const intError = validatePositiveInteger(value);
+  if (intError) return intError;
+
+  const ttl = value as number;
+  if (ttl < 1000) {
+    return 'Cache TTL must be at least 1000ms (1 second)';
+  }
+  if (ttl > 24 * 60 * 60 * 1000) {
+    return 'Cache TTL cannot exceed 24 hours';
+  }
+
+  return null;
+}
+
+/**
+ * Validates cache size (positive integer with reasonable bounds)
+ */
+function validateCacheSize(value: unknown): string | null {
+  const intError = validatePositiveInteger(value);
+  if (intError) return intError;
+
+  const size = value as number;
+  if (size < 10) {
+    return 'Cache size must be at least 10 entries';
+  }
+  if (size > 10000) {
+    return 'Cache size cannot exceed 10,000 entries';
+  }
+
+  return null;
+}
+
+/**
  * Validates that a value is a valid Perplexity model identifier
  */
 function validateModel(value: unknown): string | null {
@@ -106,7 +244,14 @@ function validateModel(value: unknown): string | null {
   if (stringError) return stringError;
 
   const model = value as string;
-  const validModels = ['perplexity/sonar'];
+  const validModels = [
+    'perplexity/sonar',
+    'perplexity/sonar-small-chat',
+    'perplexity/sonar-medium-chat',
+    'perplexity/sonar-large-chat',
+    'perplexity/sonar-small-online',
+    'perplexity/sonar-medium-online',
+  ];
 
   if (!validModels.includes(model)) {
     return `Must be one of: ${validModels.join(', ')}`;
@@ -159,6 +304,72 @@ export const CONFIG_SCHEMA: ConfigSchema[] = [
     validator: validateUrl,
     description:
       'Base URL for OpenRouter API (default: https://openrouter.ai/api/v1)',
+  },
+  {
+    field: 'defaultMaxTokens',
+    envVar: 'OPENROUTER_DEFAULT_MAX_TOKENS',
+    required: false,
+    defaultValue: 1000,
+    validator: validateMaxTokens,
+    description: 'Default maximum tokens for responses (default: 1000)',
+  },
+  {
+    field: 'defaultTemperature',
+    envVar: 'OPENROUTER_DEFAULT_TEMPERATURE',
+    required: false,
+    defaultValue: 0.7,
+    validator: validateTemperature,
+    description: 'Default temperature for response generation (default: 0.7)',
+  },
+  {
+    field: 'defaultTopP',
+    envVar: 'OPENROUTER_DEFAULT_TOP_P',
+    required: false,
+    defaultValue: 1.0,
+    validator: validateTopP,
+    description: 'Default top_p parameter for nucleus sampling (default: 1.0)',
+  },
+  {
+    field: 'defaultFrequencyPenalty',
+    envVar: 'OPENROUTER_DEFAULT_FREQUENCY_PENALTY',
+    required: false,
+    defaultValue: 0.0,
+    validator: validatePenalty,
+    description:
+      'Default frequency penalty to reduce repetition (default: 0.0)',
+  },
+  {
+    field: 'defaultPresencePenalty',
+    envVar: 'OPENROUTER_DEFAULT_PRESENCE_PENALTY',
+    required: false,
+    defaultValue: 0.0,
+    validator: validatePenalty,
+    description:
+      'Default presence penalty to encourage topic diversity (default: 0.0)',
+  },
+  {
+    field: 'cacheEnabled',
+    envVar: 'CACHE_ENABLED',
+    required: false,
+    defaultValue: true,
+    validator: validateBoolean,
+    description: 'Enable/disable response caching (default: true)',
+  },
+  {
+    field: 'cacheTtl',
+    envVar: 'CACHE_TTL_MS',
+    required: false,
+    defaultValue: 5 * 60 * 1000, // 5 minutes
+    validator: validateCacheTtl,
+    description: 'Cache TTL in milliseconds (default: 300000 = 5 minutes)',
+  },
+  {
+    field: 'cacheMaxSize',
+    envVar: 'CACHE_MAX_SIZE',
+    required: false,
+    defaultValue: 500,
+    validator: validateCacheSize,
+    description: 'Maximum cache size in number of entries (default: 500)',
   },
 ];
 

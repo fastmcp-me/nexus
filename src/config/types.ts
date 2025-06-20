@@ -13,6 +13,22 @@ export interface EnvironmentConfig {
   logLevel?: string;
   /** Base URL for OpenRouter API */
   baseUrl?: string;
+  /** Default maximum tokens for responses */
+  defaultMaxTokens?: number;
+  /** Default temperature for response generation */
+  defaultTemperature?: number;
+  /** Default top_p parameter for nucleus sampling */
+  defaultTopP?: number;
+  /** Default frequency penalty to reduce repetition */
+  defaultFrequencyPenalty?: number;
+  /** Default presence penalty to encourage topic diversity */
+  defaultPresencePenalty?: number;
+  /** Cache TTL in milliseconds */
+  cacheTtl?: number;
+  /** Maximum cache size (number of entries) */
+  cacheMaxSize?: number;
+  /** Enable/disable response caching */
+  cacheEnabled?: boolean;
 }
 
 export interface ConfigValidationResult {

@@ -567,7 +567,7 @@
         "dependencies": [
           8
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -575,7 +575,7 @@
             "description": "Add support for multiple Perplexity Sonar model variants with configurable model selection through environment variables and runtime configuration",
             "dependencies": [],
             "details": "Create a model configuration system that supports different Perplexity Sonar models (sonar-small-chat, sonar-medium-chat, sonar-large-chat). Implement model selection through environment variables with fallback defaults. Add validation for supported models and error handling for unsupported models. Update the API client to use the selected model in requests.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for model validation, integration tests with different model variants, mock API responses for each model type"
           },
           {
@@ -586,7 +586,7 @@
               1
             ],
             "details": "Create a parameter configuration system that allows setting temperature (0.0-1.0), max_tokens, top_p, and other relevant parameters. Implement validation for parameter ranges and types. Add environment variable support for default values. Create a parameter builder that merges user inputs with defaults and validates constraints.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Parameter validation tests, boundary condition testing, default value verification, integration tests with various parameter combinations"
           },
           {
@@ -597,7 +597,7 @@
               2
             ],
             "details": "Implement an in-memory cache using a hash map with TTL support. Create cache keys based on query content and parameters. Add cache hit/miss logging and metrics. Implement cache eviction for expired entries. Add configuration for cache size limits and TTL duration. Ensure thread-safety for concurrent access.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Cache hit/miss verification, TTL expiration tests, concurrent access testing, memory usage monitoring, cache invalidation scenarios"
           },
           {
@@ -608,7 +608,7 @@
               3
             ],
             "details": "Implement a request deduplication system using in-flight request tracking. Create unique request identifiers based on query and parameters. Use promises/futures to allow multiple callers to wait for the same request. Add timeout handling for stuck requests. Implement cleanup for completed requests. Ensure proper error propagation to all waiting callers.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Concurrent request testing, timeout scenario verification, error propagation testing, request identifier uniqueness validation, cleanup verification"
           },
           {
@@ -619,7 +619,7 @@
               4
             ],
             "details": "Optimize JSON parsing and response object creation. Implement streaming response processing where possible. Add response compression handling. Optimize string operations and memory allocation. Implement response validation and error handling improvements. Add performance metrics and logging for response processing times.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Performance benchmarking, memory usage profiling, response time measurements, large response handling tests, error scenario validation, metrics accuracy verification"
           }
         ]
@@ -631,7 +631,8 @@
         "status": "pending",
         "dependencies": [
           9,
-          "12"
+          "12",
+          "13"
         ],
         "priority": "low",
         "details": "Implement integration tests that verify complete MCP server functionality with real OpenRouter API using the npx distribution model. Create comprehensive README.md highlighting the zero-config npx approach (npx openrouter-search-mcp --stdio) as the primary installation method. Document MCP client integration examples using npx commands for Claude Desktop, Cursor, etc. Add troubleshooting guide covering npx-specific issues and API reference. Create example queries demonstrating the easy-to-run approach without build steps.",
@@ -828,11 +829,67 @@
         ],
         "priority": "medium",
         "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Fix MCP Server JSON Serialization Errors",
+        "description": "Diagnose and fix JSON serialization issues in the MCP server that are causing malformed JSON output and client deserialization errors, blocking proper client-server communication.",
+        "details": "Investigate and resolve JSON serialization problems in the MCP server implementation by: 1) Adding comprehensive JSON validation middleware to catch malformed responses before they're sent to clients. 2) Implementing proper error boundary handling around all JSON.stringify() calls with try-catch blocks and fallback serialization. 3) Ensuring all MCP protocol responses conform to the exact JSON-RPC 2.0 specification with proper escaping of special characters. 4) Adding response sanitization to remove any trailing commas, unescaped quotes, or invalid Unicode characters. 5) Implementing structured logging to capture serialization errors with full context including the problematic data structures. 6) Creating a response validation layer that verifies JSON syntax before transmission using JSON.parse() round-trip testing. 7) Adding proper handling for circular references and undefined values that can break JSON serialization. 8) Ensuring consistent line ending handling (LF vs CRLF) in STDIO communication that doesn't interfere with JSON parsing. 9) Implementing proper buffering for large responses to prevent partial JSON transmission over STDIO.",
+        "testStrategy": "Create comprehensive tests to verify JSON serialization fixes by: 1) Writing unit tests that intentionally create problematic data structures (circular references, undefined values, special characters) and verify they serialize correctly. 2) Implementing integration tests that capture actual STDIO output and validate it parses as valid JSON using multiple JSON parsers. 3) Creating mock MCP clients that attempt to deserialize server responses and verify no parsing errors occur. 4) Testing edge cases like very large responses, Unicode characters, and nested objects to ensure robust serialization. 5) Adding automated tests that run the server with various client scenarios and monitor for the specific error messages mentioned (\"Unexpected non-whitespace character after JSON\", \"Unexpected token '}'\"). 6) Implementing logging verification tests that confirm serialization errors are properly captured and reported. 7) Testing STDIO communication buffering with large payloads to ensure complete JSON transmission.",
+        "status": "in-progress",
+        "dependencies": [
+          5,
+          8
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement JSON Validation and Error Handling Infrastructure",
+            "description": "Create comprehensive JSON validation middleware and error boundary handling to catch malformed responses before transmission and handle serialization failures gracefully.",
+            "dependencies": [],
+            "details": "Implement JSON validation middleware that intercepts all outgoing responses and validates JSON syntax using JSON.parse() round-trip testing. Add try-catch blocks around all JSON.stringify() calls with fallback serialization for problematic data structures. Create error boundary handlers that can gracefully handle circular references, undefined values, and other serialization edge cases. Implement response sanitization to remove trailing commas, unescaped quotes, and invalid Unicode characters. Add proper handling for special characters requiring escaping according to JSON-RPC 2.0 specification.",
+            "status": "pending",
+            "testStrategy": "Unit tests for validation middleware with malformed JSON inputs, integration tests for error boundary handling with circular references and undefined values, and end-to-end tests verifying clean JSON output"
+          },
+          {
+            "id": 2,
+            "title": "Add Structured Logging and Response Validation Layer",
+            "description": "Implement comprehensive logging system to capture serialization errors with full context and create a response validation layer that ensures JSON-RPC 2.0 compliance before transmission.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create structured logging system that captures serialization errors with complete context including problematic data structures, stack traces, and request metadata. Implement response validation layer that verifies all MCP protocol responses conform to JSON-RPC 2.0 specification with proper field validation, type checking, and format compliance. Add pre-transmission validation using JSON.parse() round-trip testing to ensure syntactic correctness. Include logging for successful serializations to track performance and identify patterns in problematic data structures.",
+            "status": "pending",
+            "testStrategy": "Verify logging captures all required context fields, test response validation against JSON-RPC 2.0 specification examples, and validate round-trip testing catches all malformed JSON cases"
+          },
+          {
+            "id": 3,
+            "title": "Optimize STDIO Communication and Response Buffering",
+            "description": "Ensure proper STDIO communication handling with consistent line endings and implement buffering for large responses to prevent partial JSON transmission issues.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Implement proper line ending handling (LF vs CRLF) in STDIO communication to ensure consistent parsing across different platforms. Create response buffering system for large JSON responses to prevent partial transmission over STDIO that could break client-side parsing. Add response size monitoring and chunking strategies for oversized responses. Ensure atomic transmission of complete JSON messages with proper message boundaries. Implement timeout handling for STDIO operations and proper cleanup of buffered data on connection issues.",
+            "status": "pending",
+            "testStrategy": "Test STDIO communication across different operating systems, verify large response handling with stress testing, and validate atomic message transmission with concurrent client connections"
+          },
+          {
+            "id": 4,
+            "title": "Request user to enable MCP server",
+            "description": "Ask the user to start/enable the MCP server so we can test the protocol integration as a client",
+            "details": "The developer should request the user to enable the MCP server in their Claude Desktop configuration, then act as a client to verify the protocol is working correctly with the search functionality.\n<info added on 2025-06-20T15:18:16.416Z>\nAfter requesting the user to enable the MCP server in their Claude Desktop configuration, I will act as an MCP client to test the communication layer by invoking the search tool and verifying proper request handling, response formatting, and error handling through the MCP protocol.\n</info added on 2025-06-20T15:18:16.416Z>",
+            "status": "pending",
+            "dependencies": [],
+            "parentTaskId": 13
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T14:20:37.416Z",
+      "updated": "2025-06-20T15:20:28.695Z",
       "description": "Tasks for master context"
     }
   }
