@@ -8,28 +8,59 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 
 ## Development Commands
 
-### Core Commands
+### Build Commands
 
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm run dev` - Start development server with hot reload
-- `npm run start` - Run the built server
-- `npm run clean` - Remove dist directory
+- `npm run build` - Complete production build (clean → compile → validate → CLI setup)
+- `npm run build:clean` - Remove dist directory and build artifacts
+- `npm run build:compile` - Compile TypeScript source to JavaScript (no bundling)
+- `npm run build:validate` - Verify build output structure and integrity
+- `npm run build:cli-setup` - Configure CLI executable with proper shebang and permissions
 
-### Testing
+### Development Commands
 
-- `npm test` - Run all tests once
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:ui` - Run tests with Vitest UI
-- `npm run test:coverage` - Run tests with coverage report
-- `npm run test:integration` - Run only integration tests
+- `npm run dev` - Start parallel development with watch mode and type checking
+- `npm run dev:start` - Start development server with hot reload using ts-node
+- `npm run dev:watch` - Run development server in watch mode (alias for dev:start)
+- `npm run dev:types` - Run TypeScript compiler in watch mode for type checking
+- `npm run dev:clean` - Clean development artifacts (dist and TypeScript build info)
 
-### Code Quality
+### Testing Commands
 
-- `npm run lint` - Lint code with ESLint
-- `npm run lint:fix` - Fix auto-fixable lint issues
-- `npm run format` - Format code with Prettier
-- `npm run format:check` - Check code formatting
-- `npm run type-check` - TypeScript type checking without compilation
+- `npm test` - Run complete test suite (unit + integration tests)
+- `npm run test:unit` - Run unit tests only (excludes integration tests)
+- `npm run test:integration` - Run integration tests only
+- `npm run test:watch` - Run all tests in watch mode for development
+- `npm run test:ui` - Launch Vitest UI for interactive test management
+- `npm run test:coverage` - Run tests with coverage reporting
+- `npm run test:npx:local` - Test local NPX installation (pack → install globally → test CLI → cleanup)
+- `npm run test:npx:published` - Test published package NPX functionality
+
+### Release Commands
+
+- `npm run release` - Complete release workflow (validate → build → publish)
+- `npm run release:patch` - Automated patch release with version bump and publishing
+- `npm run release:minor` - Automated minor release with version bump and publishing
+- `npm run release:major` - Automated major release with version bump and publishing
+- `npm run release:validate` - Pre-release validation (lint + format + type-check + tests)
+- `npm run release:build` - Production build for release
+- `npm run release:publish` - Publish to NPM registry
+- `npm run release:dry-run` - Test publish process without actually publishing
+
+### Code Quality Commands
+
+- `npm run lint` - Lint code with ESLint (check for code quality issues)
+- `npm run lint:fix` - Automatically fix linting issues where possible
+- `npm run format` - Format all code with Prettier
+- `npm run format:check` - Check if code formatting meets Prettier standards
+- `npm run type-check` - TypeScript type checking using development config (includes tests)
+
+### Utility Commands
+
+- `npm run start` - Run the compiled MCP server from dist/
+- `npm run cli` - Execute the CLI tool from compiled output
+- `npm run clean` - Alias for build:clean (remove dist directory)
+- `npm run verify` - Run build verification script
+- `npm run scripts:list` - Display available script categories and their purposes
 
 ## Architecture
 
