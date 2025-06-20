@@ -381,7 +381,9 @@ export function safeStringify(
   options?: SafeSerializationOptions
 ): string {
   const result = JSONValidator.safeStringify(value, options);
-  return result.success ? result.data : '{"error": "Serialization failed"}';
+  return result.success && result.data !== undefined
+    ? result.data
+    : '{"error": "Serialization failed"}';
 }
 
 /**

@@ -25,6 +25,13 @@ repos:
         files: \.(js|jsx|ts|tsx|json|css|md|yml|yaml)$
         require_serial: false
 
+      - id: typescript-build
+        name: TypeScript Build
+        entry: npm run build
+        language: system
+        files: \.(ts|tsx)$
+        require_serial: false
+
       - id: vitest
         name: Vitest Tests
         entry: npm test
