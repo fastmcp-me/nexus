@@ -281,35 +281,41 @@ export class SecureLogger {
    * Log an error with sanitization
    */
   error(...args: unknown[]): void {
-    this.logger.error(...this.sanitizeArgs(args));
+    const sanitized = this.sanitizeArgs(args);
+    // Call logger with first argument as message, rest as meta
+    this.logger.error(String(sanitized[0] || ''), ...sanitized.slice(1));
   }
 
   /**
    * Log a warning with sanitization
    */
   warn(...args: unknown[]): void {
-    this.logger.warn(...this.sanitizeArgs(args));
+    const sanitized = this.sanitizeArgs(args);
+    this.logger.warn(String(sanitized[0] || ''), ...sanitized.slice(1));
   }
 
   /**
    * Log info with sanitization
    */
   info(...args: unknown[]): void {
-    this.logger.info(...this.sanitizeArgs(args));
+    const sanitized = this.sanitizeArgs(args);
+    this.logger.info(String(sanitized[0] || ''), ...sanitized.slice(1));
   }
 
   /**
    * Log debug information with sanitization
    */
   debug(...args: unknown[]): void {
-    this.logger.debug(...this.sanitizeArgs(args));
+    const sanitized = this.sanitizeArgs(args);
+    this.logger.debug(String(sanitized[0] || ''), ...sanitized.slice(1));
   }
 
   /**
    * Log verbose information with sanitization
    */
   verbose(...args: unknown[]): void {
-    this.logger.verbose(...this.sanitizeArgs(args));
+    const sanitized = this.sanitizeArgs(args);
+    this.logger.verbose(String(sanitized[0] || ''), ...sanitized.slice(1));
   }
 }
 

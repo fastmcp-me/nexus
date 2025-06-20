@@ -253,8 +253,9 @@ describe('Secure Logging', () => {
     });
 
     it('should handle error objects', () => {
+      const mockError = vi.fn();
       const mockLogger = {
-        error: vi.fn(),
+        error: mockError,
       } as unknown as Logger;
 
       const logger = new SecureLogger({}, mockLogger);
@@ -264,7 +265,7 @@ describe('Secure Logging', () => {
 
       logger.error('Authentication failed:', error);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(
+      expect(mockError).toHaveBeenCalledWith(
         'Authentication failed:',
         expect.objectContaining({
           name: 'Error',
@@ -272,7 +273,7 @@ describe('Secure Logging', () => {
         })
       );
 
-      const call = mockLogger.error.mock.calls[0];
+      const call = mockError.mock.calls[0];
       expect(call[1].message).not.toContain('sk-1234567890abcdef1234567890');
     });
 

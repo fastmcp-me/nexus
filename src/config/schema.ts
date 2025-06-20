@@ -1,4 +1,4 @@
-import { ConfigSchema } from './types';
+import { ConfigSchema } from './types.js';
 
 // URL is a global in Node.js environments
 declare const URL: typeof globalThis.URL;

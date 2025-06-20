@@ -1,10 +1,10 @@
-import { CONFIG_SCHEMA } from './schema';
+import { CONFIG_SCHEMA } from './schema.js';
 import {
   EnvironmentConfig,
   ConfigValidationResult,
   ConfigurationError,
   ConfigSchema,
-} from './types';
+} from './types.js';
 
 /**
  * Gets the value from environment variables, supporting multiple variable names

@@ -427,705 +427,6 @@
         "dependencies": [
           6
         ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Create Environment Configuration Schema and Validation",
-            "description": "Define the configuration schema for environment variables and implement validation logic to ensure required variables are present and properly formatted",
-            "dependencies": [],
-            "details": "Create a configuration schema that defines required variables (OPENROUTER_API_KEY) and optional variables (default model, timeout values). Implement validation functions to check for presence, format, and type of each configuration value. Use a validation library or custom validation logic to ensure API key format is valid and timeout values are positive integers.",
-            "status": "pending",
-            "testStrategy": "Unit tests for validation functions with valid/invalid inputs, missing required variables, and edge cases"
-          },
-          {
-            "id": 2,
-            "title": "Implement Configuration Manager Class",
-            "description": "Create a centralized configuration manager class that loads, validates, and provides access to environment variables with secure handling",
-            "dependencies": [
-              1
-            ],
-            "details": "Implement a ConfigurationManager class with methods to load environment variables using process.env or dotenv. Include getter methods for each configuration value with appropriate defaults. Implement secure handling by avoiding logging of sensitive values and providing masked versions for debugging. Use singleton pattern or dependency injection for consistent access across the application.",
-            "status": "pending",
-            "testStrategy": "Unit tests for configuration loading, getter methods, default value handling, and secure value masking"
-          },
-          {
-            "id": 3,
-            "title": "Create .env.example Template File",
-            "description": "Generate a comprehensive .env.example file with documentation for all supported environment variables",
-            "dependencies": [
-              1
-            ],
-            "details": "Create .env.example file containing all environment variables with example values (using placeholder values for sensitive data). Include inline comments explaining each variable's purpose, format requirements, and whether it's required or optional. Add section headers to group related variables and provide clear instructions for setup.",
-            "status": "pending",
-            "testStrategy": "Manual verification that .env.example contains all variables and documentation is clear and accurate"
-          },
-          {
-            "id": 4,
-            "title": "Implement Secure Logging and Error Handling",
-            "description": "Add secure logging mechanisms that prevent sensitive configuration values from being exposed in logs or error messages",
-            "dependencies": [
-              2
-            ],
-            "details": "Implement logging utilities that automatically mask sensitive values like API keys when logging configuration objects. Create custom error classes for configuration-related errors that don't expose sensitive data. Add debug logging for configuration loading process while ensuring sensitive values are redacted. Implement log sanitization functions that can be used throughout the application.",
-            "status": "pending",
-            "testStrategy": "Unit tests to verify sensitive values are masked in logs, error messages don't expose secrets, and debug information is appropriately filtered"
-          },
-          {
-            "id": 5,
-            "title": "Integrate Configuration Manager with Application Startup",
-            "description": "Integrate the configuration manager into the application initialization process with proper error handling and validation",
-            "dependencies": [
-              2,
-              4
-            ],
-            "details": "Modify application startup sequence to initialize configuration manager early in the process. Add configuration validation as part of application health checks. Implement graceful error handling for configuration failures with clear error messages. Create initialization function that loads and validates all configuration before starting other services. Add configuration status endpoint for monitoring purposes.",
-            "status": "pending",
-            "testStrategy": "Integration tests for application startup with valid/invalid configurations, error handling scenarios, and configuration status monitoring"
-          }
-        ]
-      },
-      {
-        "id": 8,
-        "title": "Error Handling and Logging Enhancement",
-        "description": "Implement comprehensive error handling, logging, and user-friendly error messages",
-        "details": "Enhance error handling across all components with specific error types for different failure scenarios (API errors, configuration errors, validation errors). Implement structured logging with Winston including request tracing. Create user-friendly error messages for common issues. Add error recovery mechanisms where appropriate. Implement proper error propagation through MCP protocol.",
-        "testStrategy": "Write TDD tests for various error scenarios, verify error message clarity and actionability, test logging output format and levels, and ensure errors are properly formatted for MCP protocol responses.",
-        "priority": "medium",
-        "dependencies": [
-          6,
-          7
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Define Custom Error Types and Error Classification System",
-            "description": "Create a comprehensive error type hierarchy with specific error classes for different failure scenarios including API errors, configuration errors, validation errors, and MCP protocol errors.",
-            "dependencies": [],
-            "details": "Implement custom error classes extending base Error class: APIError, ConfigurationError, ValidationError, MCPProtocolError, NetworkError. Each error type should include error codes, severity levels, and context information. Create error classification utility to categorize errors and determine appropriate handling strategies.",
-            "status": "pending",
-            "testStrategy": "Unit tests for each error type creation, error code assignment, and classification logic. Test error serialization and deserialization."
-          },
-          {
-            "id": 2,
-            "title": "Implement Winston Structured Logging with Request Tracing",
-            "description": "Set up Winston logger with structured logging format, multiple transport options, and request correlation IDs for tracing requests across components.",
-            "dependencies": [
-              1
-            ],
-            "details": "Configure Winston with JSON format, file and console transports, log rotation. Implement correlation ID middleware to track requests. Add log levels (error, warn, info, debug). Create logging utilities for different components with contextual information including timestamps, request IDs, user context, and error details.",
-            "status": "pending",
-            "testStrategy": "Test log output format, correlation ID propagation, log level filtering, and file rotation. Verify log entries contain required contextual information."
-          },
-          {
-            "id": 3,
-            "title": "Create User-Friendly Error Message System",
-            "description": "Develop a system to translate technical errors into user-friendly messages with actionable guidance and localization support.",
-            "dependencies": [
-              1
-            ],
-            "details": "Create error message mapping from error codes to user-friendly messages. Implement message templates with variable substitution. Add severity indicators and suggested actions. Include error message localization framework. Create fallback messages for unknown errors.",
-            "status": "pending",
-            "testStrategy": "Test message mapping accuracy, template variable substitution, localization switching, and fallback message handling for unmapped errors."
-          },
-          {
-            "id": 4,
-            "title": "Implement Error Recovery and Retry Mechanisms",
-            "description": "Add automatic error recovery strategies including retry logic with exponential backoff, circuit breaker patterns, and graceful degradation for different error types.",
-            "dependencies": [
-              1,
-              2
-            ],
-            "details": "Implement retry decorator with configurable attempts and backoff strategies. Add circuit breaker for external API calls. Create fallback mechanisms for non-critical failures. Implement timeout handling and connection pooling recovery. Add metrics collection for error rates and recovery success.",
-            "status": "pending",
-            "testStrategy": "Test retry logic with various failure scenarios, circuit breaker state transitions, timeout handling, and fallback mechanism activation."
-          },
-          {
-            "id": 5,
-            "title": "Integrate Error Handling with MCP Protocol Communication",
-            "description": "Ensure proper error propagation and handling through MCP protocol messages with standardized error responses and protocol-specific error handling.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "details": "Implement MCP error response formatting according to protocol specifications. Add error context preservation across protocol boundaries. Create error handling middleware for MCP message processing. Implement proper error serialization for protocol transmission. Add error acknowledgment and recovery coordination between client and server.",
-            "status": "pending",
-            "testStrategy": "Test MCP error message format compliance, error context preservation across protocol boundaries, error acknowledgment flows, and end-to-end error handling scenarios."
-          }
-        ]
-      },
-      {
-        "id": 9,
-        "title": "Advanced Search Features and Performance Optimization",
-        "description": "Implement multiple Perplexity model support, caching, and performance enhancements",
-        "details": "Add support for different Perplexity Sonar model variants through configurable model selection. Implement basic response caching with TTL for repeated queries. Add request deduplication for concurrent identical searches. Optimize response formatting and parsing. Implement configurable search parameters (temperature, max tokens, etc.) with sensible defaults.",
-        "testStrategy": "Test multiple model configurations, verify caching behavior with TTL expiration, test concurrent request handling, and validate performance improvements using TDD with performance benchmarks and cache hit/miss scenarios.",
-        "priority": "medium",
-        "dependencies": [
-          8
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Implement Configurable Perplexity Model Selection",
-            "description": "Add support for multiple Perplexity Sonar model variants with configurable model selection through environment variables and runtime configuration",
-            "dependencies": [],
-            "details": "Create a model configuration system that supports different Perplexity Sonar models (sonar-small-chat, sonar-medium-chat, sonar-large-chat). Implement model selection through environment variables with fallback defaults. Add validation for supported models and error handling for unsupported models. Update the API client to use the selected model in requests.",
-            "status": "pending",
-            "testStrategy": "Unit tests for model validation, integration tests with different model variants, mock API responses for each model type"
-          },
-          {
-            "id": 2,
-            "title": "Implement Configurable Search Parameters",
-            "description": "Add support for configurable search parameters including temperature, max tokens, and other model-specific settings with sensible defaults",
-            "dependencies": [
-              1
-            ],
-            "details": "Create a parameter configuration system that allows setting temperature (0.0-1.0), max_tokens, top_p, and other relevant parameters. Implement validation for parameter ranges and types. Add environment variable support for default values. Create a parameter builder that merges user inputs with defaults and validates constraints.",
-            "status": "pending",
-            "testStrategy": "Parameter validation tests, boundary condition testing, default value verification, integration tests with various parameter combinations"
-          },
-          {
-            "id": 3,
-            "title": "Implement Response Caching with TTL",
-            "description": "Add basic response caching mechanism with configurable Time-To-Live (TTL) for repeated queries to improve performance and reduce API calls",
-            "dependencies": [
-              2
-            ],
-            "details": "Implement an in-memory cache using a hash map with TTL support. Create cache keys based on query content and parameters. Add cache hit/miss logging and metrics. Implement cache eviction for expired entries. Add configuration for cache size limits and TTL duration. Ensure thread-safety for concurrent access.",
-            "status": "pending",
-            "testStrategy": "Cache hit/miss verification, TTL expiration tests, concurrent access testing, memory usage monitoring, cache invalidation scenarios"
-          },
-          {
-            "id": 4,
-            "title": "Implement Request Deduplication for Concurrent Searches",
-            "description": "Add request deduplication mechanism to prevent multiple concurrent identical searches from hitting the API simultaneously",
-            "dependencies": [
-              3
-            ],
-            "details": "Implement a request deduplication system using in-flight request tracking. Create unique request identifiers based on query and parameters. Use promises/futures to allow multiple callers to wait for the same request. Add timeout handling for stuck requests. Implement cleanup for completed requests. Ensure proper error propagation to all waiting callers.",
-            "status": "pending",
-            "testStrategy": "Concurrent request testing, timeout scenario verification, error propagation testing, request identifier uniqueness validation, cleanup verification"
-          },
-          {
-            "id": 5,
-            "title": "Optimize Response Formatting and Parsing",
-            "description": "Enhance response processing performance through optimized parsing, formatting, and data structure improvements",
-            "dependencies": [
-              4
-            ],
-            "details": "Optimize JSON parsing and response object creation. Implement streaming response processing where possible. Add response compression handling. Optimize string operations and memory allocation. Implement response validation and error handling improvements. Add performance metrics and logging for response processing times.",
-            "status": "pending",
-            "testStrategy": "Performance benchmarking, memory usage profiling, response time measurements, large response handling tests, error scenario validation, metrics accuracy verification"
-          }
-        ]
-      },
-      {
-        "id": 10,
-        "title": "Integration Testing and Documentation",
-        "description": "Create end-to-end integration tests and comprehensive documentation for deployment",
-        "details": "Implement integration tests that verify complete MCP server functionality with real OpenRouter API (using test API keys). Create comprehensive README.md with installation, configuration, and usage instructions. Document MCP client integration examples for Claude Desktop, Cursor, etc. Add troubleshooting guide and API reference. Create example queries and expected responses.",
-        "testStrategy": "Run integration tests against live OpenRouter API in test environment, verify documentation accuracy through manual testing, validate MCP client integration examples, and ensure all setup instructions work from clean environment.",
-        "priority": "low",
-        "dependencies": [
-          9
-        ],
-        "status": "pending",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Create End-to-End Integration Test Suite",
-            "description": "Implement comprehensive integration tests that verify complete MCP server functionality with real OpenRouter API using test API keys",
-            "dependencies": [],
-            "details": "Set up test environment with test API keys for OpenRouter. Create integration tests covering: MCP server startup/shutdown, tool registration, real API calls to OpenRouter with various models, error handling scenarios, rate limiting, and authentication flows. Use pytest framework with async support. Mock external dependencies where appropriate but test real API integration paths.",
-            "status": "pending",
-            "testStrategy": "Run tests against live OpenRouter API with dedicated test keys, verify all MCP tools work end-to-end, test error scenarios and edge cases"
-          },
-          {
-            "id": 2,
-            "title": "Create Comprehensive README Documentation",
-            "description": "Develop detailed README.md with installation, configuration, and usage instructions for the MCP server",
-            "dependencies": [
-              1
-            ],
-            "details": "Structure README with: project overview, prerequisites, installation steps (pip install, from source), configuration guide (API keys, environment variables), basic usage examples, feature overview with code snippets. Include badges for build status, version, license. Add table of contents and clear section headers. Ensure all installation steps are tested and accurate.",
-            "status": "pending",
-            "testStrategy": "Follow installation instructions on clean environment to verify accuracy, test all provided code examples"
-          },
-          {
-            "id": 3,
-            "title": "Document MCP Client Integration Examples",
-            "description": "Create detailed integration guides and examples for popular MCP clients including Claude Desktop, Cursor, and other compatible clients",
-            "dependencies": [
-              2
-            ],
-            "details": "Create separate documentation sections for each client: Claude Desktop configuration (claude_desktop_config.json setup), Cursor integration steps, VS Code MCP extension setup, and generic MCP client integration. Include screenshots, configuration file examples, step-by-step setup instructions, and verification steps. Document client-specific features and limitations.",
-            "status": "pending",
-            "testStrategy": "Test integration with each documented client, verify configuration examples work correctly"
-          },
-          {
-            "id": 4,
-            "title": "Create Troubleshooting Guide and API Reference",
-            "description": "Develop comprehensive troubleshooting documentation and detailed API reference for all available tools and endpoints",
-            "dependencies": [
-              3
-            ],
-            "details": "Create troubleshooting guide covering: common installation issues, API key problems, network connectivity issues, rate limiting errors, client connection problems, and debugging steps. Build API reference documenting all MCP tools with: function signatures, parameter descriptions, return types, example requests/responses, error codes. Include logging configuration and debugging tips.",
-            "status": "pending",
-            "testStrategy": "Validate all troubleshooting scenarios, test API reference examples, ensure error codes are accurate"
-          },
-          {
-            "id": 5,
-            "title": "Create Example Queries and Usage Scenarios",
-            "description": "Develop comprehensive collection of example queries, expected responses, and real-world usage scenarios to demonstrate MCP server capabilities",
-            "dependencies": [
-              4
-            ],
-            "details": "Create examples covering: basic chat completions with different models, streaming responses, function calling scenarios, error handling examples, rate limiting demonstrations, and advanced use cases. Include expected response formats, timing information, and cost estimates. Organize examples by complexity level (beginner, intermediate, advanced) and use case (creative writing, code generation, analysis, etc.).",
-            "status": "pending",
-            "testStrategy": "Execute all example queries against live API, verify response formats match documentation, validate cost and timing estimates"
-          }
-        ]
-      }
-    ],
-    "metadata": {
-      "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T02:35:17.964Z",
-      "description": "Tasks for master context"
-    }
-  },
-  "main": {
-    "tasks": [
-      {
-        "id": 1,
-        "title": "Project Setup and Package Configuration",
-        "description": "Initialize Node.js project with TypeScript, MCP SDK, and essential dependencies",
-        "details": "Create package.json with Node.js v16+ requirement, install @modelcontextprotocol/sdk-typescript, TypeScript, and HTTP client dependencies. Setup tsconfig.json with strict mode and ES2020 target. Create basic project structure with src/ directory and entry point. Configure npm scripts for build, dev, and start commands.",
-        "testStrategy": "Verify package.json structure, TypeScript compilation, and dependency resolution. Test that MCP SDK imports correctly and basic project builds without errors.",
-        "priority": "high",
-        "dependencies": [],
-        "status": "done",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Initialize Node.js Project and Package.json Configuration",
-            "description": "Create the foundational Node.js project structure with proper package.json configuration including Node.js version requirements and basic project metadata",
-            "dependencies": [],
-            "details": "Run 'npm init -y' to create package.json, then modify it to include Node.js v16+ engine requirement, set type to 'module' for ES modules, add project name, description, version, and author fields. Set main entry point to 'dist/index.js'",
-            "status": "done",
-            "testStrategy": "Verify package.json contains correct engine specification and can be parsed without errors"
-          },
-          {
-            "id": 2,
-            "title": "Install Core Dependencies and MCP SDK",
-            "description": "Install all required dependencies including MCP SDK, TypeScript toolchain, and HTTP client libraries",
-            "dependencies": [
-              1
-            ],
-            "details": "Install @modelcontextprotocol/sdk-typescript as main dependency. Install TypeScript, @types/node, ts-node, and nodemon as dev dependencies. Add axios or fetch-based HTTP client library for API calls. Use 'npm install' with appropriate --save and --save-dev flags",
-            "status": "done",
-            "testStrategy": "Verify all packages are listed in package.json dependencies/devDependencies and node_modules directory is populated correctly"
-          },
-          {
-            "id": 3,
-            "title": "Configure TypeScript with tsconfig.json",
-            "description": "Set up TypeScript configuration with strict mode, proper target settings, and module resolution for the MCP server project",
-            "dependencies": [
-              2
-            ],
-            "details": "Create tsconfig.json with strict: true, target: 'ES2020', module: 'ESNext', moduleResolution: 'node', outDir: './dist', rootDir: './src', and include src/**/* files. Enable esModuleInterop and allowSyntheticDefaultImports for better compatibility",
-            "status": "done",
-            "testStrategy": "Run 'npx tsc --noEmit' to validate TypeScript configuration without compilation errors"
-          },
-          {
-            "id": 4,
-            "title": "Create Project Directory Structure",
-            "description": "Establish the basic project folder structure with src directory and create placeholder entry point file",
-            "dependencies": [
-              3
-            ],
-            "details": "Create src/ directory in project root. Create src/index.ts as main entry point with basic MCP server import and placeholder export. Create additional subdirectories like src/handlers/, src/types/, and src/utils/ for organized code structure",
-            "status": "done",
-            "testStrategy": "Verify directory structure exists and src/index.ts can be imported without syntax errors"
-          },
-          {
-            "id": 5,
-            "title": "Configure NPM Scripts for Development Workflow",
-            "description": "Set up npm scripts in package.json for building, development, and running the MCP server",
-            "dependencies": [
-              4
-            ],
-            "details": "Add scripts to package.json: 'build': 'tsc' for compilation, 'dev': 'nodemon --exec ts-node src/index.ts' for development with auto-reload, 'start': 'node dist/index.js' for production, and 'clean': 'rm -rf dist' for cleanup. Ensure scripts work with the established project structure",
-            "status": "done",
-            "testStrategy": "Test each npm script runs without errors: npm run build should compile TypeScript, npm run dev should start development server, npm start should run compiled code"
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "title": "Development Tooling and Code Quality Setup",
-        "description": "Configure ESLint flat config, Prettier, and pre-commit hooks for code quality",
-        "status": "done",
-        "dependencies": [
-          1
-        ],
-        "priority": "high",
-        "details": "Setup eslint.config.js with flat config format using @typescript-eslint/eslint-plugin, @eslint/js, eslint-config-prettier, eslint-plugin-node, eslint-plugin-import, and eslint-plugin-unused-imports. Configure Prettier with .prettierrc. Install and configure pre-commit hooks using uv tool install pre-commit --with pre-commit-uv for linting, formatting, type checking, and testing. Setup .gitignore for Node.js projects.",
-        "testStrategy": "Run ESLint on sample TypeScript files, verify Prettier formatting works, test pre-commit hooks trigger correctly, and ensure no conflicts between ESLint and Prettier.",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Install and Configure ESLint with Flat Config",
-            "description": "Set up ESLint using the new flat config format with TypeScript support and necessary plugins",
-            "dependencies": [],
-            "details": "Install ESLint and required plugins: @typescript-eslint/eslint-plugin, @eslint/js, eslint-config-prettier, eslint-plugin-node, eslint-plugin-import, and eslint-plugin-unused-imports. Create eslint.config.js using the flat config format with TypeScript parser, recommended rules, and plugin configurations. Configure rules for import ordering, unused imports removal, and Node.js best practices.",
-            "status": "done",
-            "testStrategy": "Run eslint --config eslint.config.js on sample TypeScript files to verify configuration works correctly"
-          },
-          {
-            "id": 2,
-            "title": "Configure Prettier for Code Formatting",
-            "description": "Set up Prettier with project-specific formatting rules and ensure ESLint compatibility",
-            "dependencies": [
-              1
-            ],
-            "details": "Install Prettier and create .prettierrc configuration file with formatting rules (semi-colons, quotes, trailing commas, etc.). Create .prettierignore file to exclude build directories and generated files. Verify ESLint and Prettier integration works without conflicts by ensuring eslint-config-prettier is properly configured.",
-            "status": "done",
-            "testStrategy": "Format sample files with Prettier and verify no conflicts with ESLint rules"
-          },
-          {
-            "id": 3,
-            "title": "Create Project .gitignore File",
-            "description": "Set up comprehensive .gitignore file for Node.js/TypeScript project",
-            "dependencies": [],
-            "details": "Create .gitignore file covering Node.js dependencies (node_modules/), build outputs (dist/, build/), environment files (.env*), IDE files (.vscode/, .idea/), OS files (.DS_Store, Thumbs.db), logs (*.log), and temporary files. Include TypeScript-specific ignores like .tsbuildinfo.",
-            "status": "done",
-            "testStrategy": "Verify that ignored files and directories are not tracked by git status"
-          },
-          {
-            "id": 4,
-            "title": "Install and Configure pre-commit using uv tool",
-            "description": "Set up pre-commit framework using uv tool to manage Git hooks for automated code quality checks",
-            "dependencies": [
-              1,
-              2
-            ],
-            "details": "Install pre-commit using 'uv tool install pre-commit --with pre-commit-uv' command. Create .pre-commit-config.yaml file with hooks for ESLint, Prettier, and TypeScript type checking. Configure hooks to run on appropriate file types and include local hooks for npm-based tools. Install the pre-commit hooks using 'pre-commit install' command.\n<info added on 2025-06-20T01:37:20.038Z>\nSuccessfully completed pre-commit setup and configuration. Installed pre-commit via uv tool command and created comprehensive .pre-commit-config.yaml with basic hooks (trailing whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, check-added-large-files) plus local hooks for ESLint, Prettier, and TypeScript type checking. Added required npm scripts to package.json for lint, lint:fix, format, format:check, and type-check operations. Resolved core.hooksPath conflict during installation and successfully installed all hooks. Tested pre-commit hooks on all project files - they properly detect formatting and code quality issues. All hooks now pass after running Prettier to fix formatting issues. Pre-commit framework is fully operational and will enforce code quality standards on all future commits.\n</info added on 2025-06-20T01:37:20.038Z>",
-            "status": "done",
-            "testStrategy": "Test pre-commit hooks by making commits with intentionally poorly formatted or linted code to ensure hooks prevent commits"
-          },
-          {
-            "id": 5,
-            "title": "Create NPM Scripts and Validate Complete Setup",
-            "description": "Add package.json scripts for linting, formatting, and type checking, then validate the entire tooling setup",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "details": "Add npm scripts for 'lint', 'lint:fix', 'format', 'format:check', and 'type-check' in package.json. Create a sample TypeScript file with intentional formatting and linting issues. Run through the complete workflow: commit attempt should trigger pre-commit hooks, scripts should work independently, and all tools should integrate seamlessly.\n<info added on 2025-06-20T01:41:40.356Z>\nSuccessfully completed NPM scripts validation and complete setup testing. All required npm scripts (lint, lint:fix, format, format:check, type-check) were already present in package.json and working correctly. Created and tested sample TypeScript file with intentional issues to validate:\n\n1. ESLint detection of unused imports, formatting issues, and undefined functions\n2. Prettier automatic formatting capabilities  \n3. TypeScript type checking working properly\n4. ESLint auto-fix removing unused imports and fixing code style\n5. Pre-commit hooks properly blocking commits with linting or type errors\n6. Complete workflow integration between all tools\n\nAll development tooling is now fully operational and validated. The setup successfully enforces code quality standards and prevents commits with issues.\n</info added on 2025-06-20T01:41:40.356Z>",
-            "status": "done",
-            "testStrategy": "Execute all npm scripts on sample code and perform test commits to verify the complete development workflow functions correctly"
-          }
-        ]
-      },
-      {
-        "id": 3,
-        "title": "Test Framework Setup with Vitest",
-        "description": "Configure Vitest testing framework with mocking capabilities and TDD structure",
-        "details": "Install Vitest, @vitest/ui, and mocking libraries. Create vitest.config.ts with TypeScript support and test environment configuration. Setup test directory structure with unit and integration test folders. Configure test coverage reporting with >90% target. Create test utilities and mock factories for OpenRouter API and MCP protocol interactions.",
-        "testStrategy": "Verify Vitest runs successfully, test coverage reporting works, mock factories function correctly, and sample tests can be written and executed in TDD red-green-refactor cycle.",
-        "priority": "high",
-        "dependencies": [
-          1,
-          2
-        ],
-        "status": "done",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Install Vitest and Testing Dependencies",
-            "description": "Install Vitest testing framework along with UI tools and mocking libraries required for comprehensive testing setup",
-            "dependencies": [],
-            "details": "Install @vitest/ui for test visualization, @vitest/coverage-v8 for coverage reporting, vitest for the core framework, and msw (Mock Service Worker) for API mocking. Also install @types/node for TypeScript support in test files.",
-            "status": "done",
-            "testStrategy": "Verify installation by running basic vitest command and checking package.json dependencies"
-          },
-          {
-            "id": 2,
-            "title": "Configure Vitest with TypeScript Support",
-            "description": "Create and configure vitest.config.ts with TypeScript support, test environment settings, and coverage configuration",
-            "dependencies": [
-              1
-            ],
-            "details": "Create vitest.config.ts with defineConfig, set test environment to 'node', configure TypeScript paths, enable coverage with v8 provider, set coverage threshold to >90%, and configure test file patterns for .test.ts and .spec.ts files.",
-            "status": "done",
-            "testStrategy": "Run vitest --config to validate configuration loads without errors"
-          },
-          {
-            "id": 3,
-            "title": "Setup Test Directory Structure",
-            "description": "Create organized test directory structure with separate folders for unit tests, integration tests, and test utilities",
-            "dependencies": [
-              2
-            ],
-            "details": "Create tests/ directory with subdirectories: tests/unit/ for component and function tests, tests/integration/ for API and workflow tests, tests/fixtures/ for test data, and tests/utils/ for test utilities. Add index files to export common test helpers.",
-            "status": "done",
-            "testStrategy": "Create sample test files in each directory to verify structure and imports work correctly"
-          },
-          {
-            "id": 4,
-            "title": "Configure Coverage Reporting and Scripts",
-            "description": "Setup comprehensive test coverage reporting with detailed output formats and npm scripts for different testing scenarios",
-            "dependencies": [
-              3
-            ],
-            "details": "Configure coverage to include src/ directory, exclude test files and node_modules, generate HTML and JSON reports, set branch/function/line coverage thresholds to 90%. Add npm scripts for 'test', 'test:watch', 'test:ui', 'test:coverage', and 'test:integration'.",
-            "status": "done",
-            "testStrategy": "Run coverage command to verify reports generate correctly and thresholds are enforced"
-          },
-          {
-            "id": 5,
-            "title": "Create Test Utilities and Mock Factories",
-            "description": "Develop reusable test utilities and mock factories specifically for OpenRouter API and MCP protocol interactions",
-            "dependencies": [
-              4
-            ],
-            "details": "Create mock factories in tests/utils/mocks/ for OpenRouter API responses, MCP protocol messages, and common data structures. Build test utilities for setup/teardown, assertion helpers, and async testing patterns. Include TypeScript types for all mocks and utilities.",
-            "status": "done",
-            "testStrategy": "Write integration tests using the mock factories to verify they properly simulate real API and protocol interactions"
-          },
-          {
-            "id": 6,
-            "title": "Vitest Pre-commit hook",
-            "description": "add unit test to pre-commit hook for files that change as part of a commit",
-            "details": "",
-            "status": "done",
-            "dependencies": [],
-            "parentTaskId": 3
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "title": "OpenRouter API Client Implementation",
-        "description": "Implement HTTP client for OpenRouter API with authentication and error handling",
-        "details": "Create OpenRouter API client class using fetch or axios with Bearer token authentication. Implement /chat/completions endpoint integration targeting Perplexity Sonar models. Add request/response type definitions matching OpenRouter API spec. Include retry logic, timeout handling, and structured error responses. Support streaming responses for real-time data.",
-        "testStrategy": "Write unit tests with mocked HTTP responses, test authentication header injection, verify error handling for various API failure scenarios, and validate request/response type safety using TDD approach.",
-        "priority": "high",
-        "dependencies": [
-          3
-        ],
-        "status": "done",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Define TypeScript interfaces and types for OpenRouter API",
-            "description": "Create comprehensive TypeScript type definitions for OpenRouter API request and response structures, focusing on chat completions endpoint and Perplexity Sonar models",
-            "dependencies": [],
-            "details": "Define interfaces for ChatCompletionRequest, ChatCompletionResponse, Message, Choice, Usage, and Error types. Include union types for Perplexity Sonar model variants. Create enums for roles (user, assistant, system) and finish reasons. Add optional streaming response types with delta structures.",
-            "status": "done",
-            "testStrategy": "Create unit tests to validate type definitions compile correctly and cover all required properties"
-          },
-          {
-            "id": 2,
-            "title": "Implement base HTTP client with authentication",
-            "description": "Create the core HTTP client class with Bearer token authentication, base URL configuration, and common headers setup for OpenRouter API",
-            "dependencies": [
-              1
-            ],
-            "details": "Implement OpenRouterClient class with constructor accepting API key and optional base URL. Set up default headers including Authorization Bearer token, Content-Type application/json, and User-Agent. Use fetch API with proper TypeScript typing. Include method for setting custom headers and API key validation.",
-            "status": "done",
-            "testStrategy": "Mock fetch API and test authentication header injection, base URL construction, and API key validation"
-          },
-          {
-            "id": 3,
-            "title": "Implement chat completions endpoint with request handling",
-            "description": "Add chat completions method to handle requests to /chat/completions endpoint with proper payload formatting and model targeting for Perplexity Sonar",
-            "dependencies": [
-              2
-            ],
-            "details": "Implement chatCompletions method accepting ChatCompletionRequest parameters. Format request payload with messages, model selection (default to Perplexity Sonar models), temperature, max_tokens, and stream options. Handle both streaming and non-streaming requests with appropriate content-type headers.",
-            "status": "done",
-            "testStrategy": "Test with mock requests for both streaming and non-streaming modes, validate payload formatting and model parameter handling"
-          },
-          {
-            "id": 4,
-            "title": "Add error handling and retry logic",
-            "description": "Implement comprehensive error handling with structured error responses, HTTP status code handling, and configurable retry logic with exponential backoff",
-            "dependencies": [
-              3
-            ],
-            "details": "Create custom error classes for different error types (AuthenticationError, RateLimitError, APIError). Implement retry logic with exponential backoff for transient errors (429, 500, 502, 503, 504). Add timeout handling with configurable timeout values. Parse and structure API error responses into meaningful error objects.",
-            "status": "done",
-            "testStrategy": "Test error scenarios with mocked HTTP responses, validate retry behavior with different status codes, and test timeout handling"
-          },
-          {
-            "id": 5,
-            "title": "Implement streaming response handling",
-            "description": "Add support for Server-Sent Events (SSE) streaming responses from OpenRouter API with real-time data processing and proper stream lifecycle management",
-            "dependencies": [
-              4
-            ],
-            "details": "Implement streaming response parser for SSE format with 'data: ' prefixed JSON chunks. Handle stream lifecycle events (start, data, end, error). Create async generator or callback-based interface for consuming streaming responses. Parse delta responses and reconstruct complete messages. Handle connection cleanup and abort signals.",
-            "status": "done",
-            "testStrategy": "Test streaming with mock SSE responses, validate delta parsing and message reconstruction, test stream interruption and cleanup"
-          }
-        ]
-      },
-      {
-        "id": 5,
-        "title": "MCP Server Framework Implementation",
-        "description": "Create basic MCP server structure with STDIO communication and protocol handling",
-        "details": "Implement MCP server using @modelcontextprotocol/sdk-typescript with STDIO transport. Create server initialization, request routing, and response handling. Implement proper MCP protocol compliance with request/response validation. Add structured logging using Winston. Create server lifecycle management (start, stop, error handling).",
-        "testStrategy": "Mock STDIO communication, test MCP protocol message parsing and response formatting, verify server lifecycle events, and ensure protocol compliance using TDD with comprehensive mocking of MCP interactions.",
-        "priority": "high",
-        "dependencies": [
-          3
-        ],
-        "status": "done",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Setup MCP Server Project Structure and Dependencies",
-            "description": "Initialize the MCP server project with proper TypeScript configuration and install required dependencies including @modelcontextprotocol/sdk-typescript and Winston logging",
-            "dependencies": [],
-            "details": "Create package.json with TypeScript and MCP SDK dependencies. Setup tsconfig.json for proper TypeScript compilation. Install @modelcontextprotocol/sdk-typescript, winston for logging, and necessary type definitions. Create basic project structure with src/ directory and entry point file.\n<info added on 2025-06-20T02:18:49.478Z>\nProject structure and dependencies verified as complete. Found existing package.json with @modelcontextprotocol/sdk dependency, TypeScript configuration properly set up, and basic server entry point already created at src/index.ts. All prerequisites satisfied for proceeding to STDIO transport implementation.\n</info added on 2025-06-20T02:18:49.478Z>",
-            "status": "done",
-            "testStrategy": "Verify project builds successfully and all dependencies are properly installed"
-          },
-          {
-            "id": 2,
-            "title": "Implement STDIO Transport and Server Initialization",
-            "description": "Create the basic MCP server instance with STDIO transport configuration and establish the communication channel",
-            "dependencies": [
-              1
-            ],
-            "details": "Use @modelcontextprotocol/sdk-typescript to create Server instance with StdioServerTransport. Configure STDIO streams for input/output communication. Implement server initialization logic with proper error handling for transport setup failures.\n<info added on 2025-06-20T02:21:03.743Z>\nEnhanced STDIO transport implementation completed with comprehensive error handling and connection management. Added robust error handling for transport setup failures including connection timeouts, stream errors, and initialization failures. Implemented proper logging system to track transport status and debug connection issues. Added graceful shutdown procedures and connection state monitoring to ensure reliable server operation.\n</info added on 2025-06-20T02:21:03.743Z>",
-            "status": "done",
-            "testStrategy": "Test STDIO communication by sending basic messages and verifying server responds correctly"
-          },
-          {
-            "id": 3,
-            "title": "Implement MCP Protocol Request Routing and Validation",
-            "description": "Create request routing system that handles different MCP protocol message types with proper validation and error handling",
-            "dependencies": [
-              2
-            ],
-            "details": "Implement request handlers for core MCP protocol methods (initialize, list_tools, call_tool, etc.). Add request validation using MCP protocol schemas. Create routing logic to dispatch requests to appropriate handlers. Implement proper error responses for invalid requests.",
-            "status": "done",
-            "testStrategy": "Test with various MCP protocol messages including valid and invalid requests to ensure proper routing and validation"
-          },
-          {
-            "id": 4,
-            "title": "Add Structured Logging with Winston",
-            "description": "Integrate Winston logging throughout the server with structured log formats for debugging and monitoring",
-            "dependencies": [
-              2
-            ],
-            "details": "Configure Winston logger with appropriate log levels and formatters. Add logging for server lifecycle events, request/response cycles, and error conditions. Create structured log format with timestamps, request IDs, and contextual information. Implement log rotation and file output configuration.",
-            "status": "done",
-            "testStrategy": "Verify logs are generated correctly for different scenarios and log levels can be controlled"
-          },
-          {
-            "id": 5,
-            "title": "Implement Server Lifecycle Management and Error Handling",
-            "description": "Create comprehensive server lifecycle management including graceful startup, shutdown procedures, and robust error handling",
-            "dependencies": [
-              3,
-              4
-            ],
-            "details": "Implement server start/stop methods with proper cleanup. Add signal handlers for graceful shutdown (SIGINT, SIGTERM). Create error handling for unhandled exceptions and promise rejections. Implement connection state management and recovery mechanisms. Add health check capabilities.",
-            "status": "done",
-            "testStrategy": "Test server startup, shutdown, and error recovery scenarios including process signals and connection failures"
-          }
-        ]
-      },
-      {
-        "id": 6,
-        "title": "Core Search Tool Implementation",
-        "description": "Implement the primary search_tool with OpenRouter integration and MCP tool registration",
-        "details": "Create search_tool implementation that accepts query strings and optional parameters (model, maxTokens, temperature). Integrate with OpenRouter client to call Perplexity Sonar models. Format responses according to SearchResponse data model. Register tool with MCP server and provide clear tool description for AI assistant understanding. Implement input validation using Zod schemas.",
-        "testStrategy": "Write TDD tests for search functionality with mocked OpenRouter responses, test tool registration with MCP server, validate input/output schemas, and verify error propagation from API client to tool response.",
-        "priority": "high",
-        "dependencies": [
-          4,
-          5
-        ],
-        "status": "done",
-        "subtasks": [
-          {
-            "id": 1,
-            "title": "Define Zod Schemas for Input Validation",
-            "description": "Create comprehensive Zod schemas for validating search tool inputs including query strings and optional parameters",
-            "dependencies": [],
-            "details": "Define schemas for query validation (string, non-empty), model selection (enum of supported Perplexity models), maxTokens (positive integer with reasonable bounds), and temperature (number between 0-2). Create a main SearchToolInput schema that combines all parameters with proper defaults.",
-            "status": "done",
-            "testStrategy": "Unit tests for schema validation with valid/invalid inputs, edge cases for parameter bounds"
-          },
-          {
-            "id": 2,
-            "title": "Implement OpenRouter Client Integration",
-            "description": "Set up OpenRouter client configuration and implement the core API communication logic for Perplexity Sonar models",
-            "dependencies": [
-              1
-            ],
-            "details": "Configure OpenRouter client with API key management, implement async function to call Perplexity Sonar models with proper error handling, request formatting, and response parsing. Handle rate limiting and timeout scenarios.",
-            "status": "done",
-            "testStrategy": "Integration tests with mock OpenRouter responses, error handling tests for network failures and API errors"
-          },
-          {
-            "id": 3,
-            "title": "Create SearchResponse Data Model and Formatting",
-            "description": "Define the SearchResponse data structure and implement response formatting logic",
-            "dependencies": [
-              2
-            ],
-            "details": "Create TypeScript interfaces/types for SearchResponse including fields for search results, metadata, sources, and error states. Implement formatting functions to transform OpenRouter API responses into the standardized SearchResponse format.",
-            "status": "done",
-            "testStrategy": "Unit tests for response formatting with various API response structures, validation of output format consistency"
-          },
-          {
-            "id": 4,
-            "title": "Implement Core Search Tool Function",
-            "description": "Build the main search_tool function that orchestrates input validation, API calls, and response formatting",
-            "dependencies": [
-              1,
-              2,
-              3
-            ],
-            "details": "Create the primary search_tool async function that validates inputs using Zod schemas, calls OpenRouter client with validated parameters, handles errors gracefully, and returns properly formatted SearchResponse objects. Include logging and performance monitoring.",
-            "status": "done",
-            "testStrategy": "End-to-end tests with real API calls, unit tests for error scenarios, performance tests for response times"
-          },
-          {
-            "id": 5,
-            "title": "Register Tool with MCP Server",
-            "description": "Register the search tool with the MCP server and provide comprehensive tool description for AI assistant integration",
-            "dependencies": [
-              4
-            ],
-            "details": "Create MCP tool registration with detailed description including purpose, parameters, expected inputs/outputs, and usage examples. Implement proper tool metadata for AI assistant understanding including parameter descriptions, constraints, and return value specifications.",
-            "status": "done",
-            "testStrategy": "Integration tests for MCP registration, validation of tool metadata accuracy, tests for AI assistant tool discovery and usage"
-          }
-        ]
-      },
-      {
-        "id": 7,
-        "title": "Environment Configuration and API Key Management",
-        "description": "Implement secure configuration management for OpenRouter API key and environment variables",
-        "details": "Create configuration manager that reads OpenRouter API key from environment variables (OPENROUTER_API_KEY). Implement validation to ensure required configuration is present. Add support for optional configuration like default model selection and timeout values. Create .env.example file with documentation. Implement secure handling without logging sensitive values.",
-        "testStrategy": "Test configuration loading with various environment setups, verify error handling for missing API keys, test default value assignment, and ensure sensitive data is not logged using TDD approach with environment mocking.",
-        "priority": "medium",
-        "dependencies": [
-          6
-        ],
         "status": "done",
         "subtasks": [
           {
@@ -1389,11 +690,88 @@
             "testStrategy": "Execute all example queries against live API, verify response formats match documentation, validate cost and timing estimates"
           }
         ]
+      },
+      {
+        "id": 11,
+        "title": "Project Sanity Test and Build Fixes",
+        "description": "Perform comprehensive sanity test on current project state and fix critical build issues including TypeScript compilation errors, ES module import issues, and ensure the project builds and runs correctly.",
+        "details": "Execute comprehensive project health check by running full build pipeline (npm run build), identifying and fixing TypeScript compilation errors in logging configuration and other components. Resolve ES module import/export issues by ensuring consistent module syntax across all files and proper tsconfig.json configuration. Fix any missing dependencies or version conflicts in package.json. Verify all npm scripts work correctly (build, dev, start, test). Address any circular dependency issues and ensure proper module resolution. Update import statements to use consistent ES module syntax. Fix any type definition conflicts or missing type declarations. Ensure Winston logging configuration compiles correctly with proper TypeScript types. Validate that MCP SDK integration works without compilation errors. Test that the built project can start and respond to basic MCP protocol messages. Create or update build verification script that can be run in CI/CD pipeline.",
+        "testStrategy": "Run npm run build and verify zero TypeScript compilation errors. Execute npm test to ensure all existing tests pass. Test npm start to verify the MCP server initializes without runtime errors. Validate that the server responds correctly to basic MCP protocol messages using manual testing or automated integration tests. Check that all import statements resolve correctly and no module resolution errors occur. Verify logging functionality works by checking log output during server startup and operation. Test the complete development workflow from clean npm install through build and start. Run ESLint and Prettier to ensure code quality standards are maintained. Validate that the project can be built and run in a clean environment (fresh node_modules installation).",
+        "status": "done",
+        "dependencies": [
+          1,
+          2,
+          3,
+          5,
+          7
+        ],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Fix TypeScript Configuration and Compilation Errors",
+            "description": "Resolve all TypeScript compilation errors by fixing tsconfig.json configuration, type definitions, and ensuring proper ES module setup",
+            "dependencies": [],
+            "details": "Run 'npm run build' to identify TypeScript errors. Fix tsconfig.json to ensure proper module resolution with 'moduleResolution': 'node', 'target': 'ES2020', and 'module': 'ESNext'. Resolve type definition conflicts, add missing type declarations, and fix Winston logging configuration types. Ensure all import/export statements use consistent ES module syntax. Address any circular dependency issues by restructuring imports.",
+            "status": "done",
+            "testStrategy": "Run 'tsc --noEmit' to verify TypeScript compilation without errors. Check that all type definitions are properly resolved."
+          },
+          {
+            "id": 2,
+            "title": "Resolve Package Dependencies and Version Conflicts",
+            "description": "Audit and fix package.json dependencies, resolve version conflicts, and ensure all required packages are properly installed",
+            "dependencies": [
+              1
+            ],
+            "details": "Run 'npm audit' to identify dependency issues. Check for missing dependencies that cause import errors. Resolve version conflicts between packages, especially TypeScript-related ones. Update package.json with correct dependency versions. Run 'npm install' to ensure clean dependency installation. Verify that MCP SDK and Winston logging dependencies are compatible.",
+            "status": "done",
+            "testStrategy": "Run 'npm ls' to verify dependency tree is clean. Execute 'npm audit --audit-level=moderate' to ensure no critical vulnerabilities."
+          },
+          {
+            "id": 3,
+            "title": "Fix ES Module Import/Export Issues",
+            "description": "Standardize all import/export statements to use consistent ES module syntax and resolve module resolution issues",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Convert all require() statements to ES6 import syntax. Ensure all exports use 'export' or 'export default' syntax. Update file extensions in imports where necessary (.js for compiled output). Fix relative import paths to be consistent. Ensure package.json has 'type': 'module' if using ES modules throughout, or configure proper dual module support.",
+            "status": "done",
+            "testStrategy": "Run build process and verify no module resolution errors. Test that all imports resolve correctly in both development and production builds."
+          },
+          {
+            "id": 4,
+            "title": "Validate and Fix NPM Scripts and Build Pipeline",
+            "description": "Ensure all npm scripts (build, dev, start, test) work correctly and the complete build pipeline executes without errors",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Test each npm script individually: 'npm run build', 'npm run dev', 'npm start', 'npm test'. Fix any script configuration issues in package.json. Ensure build output is generated correctly in the expected directory. Verify that the development server starts without errors. Fix any missing script dependencies or incorrect script commands.",
+            "status": "done",
+            "testStrategy": "Execute each npm script and verify successful completion. Check that build artifacts are created and development server responds correctly."
+          },
+          {
+            "id": 5,
+            "title": "Create Build Verification and MCP Protocol Testing",
+            "description": "Implement comprehensive build verification script and test MCP protocol functionality to ensure the project is fully operational",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "details": "Create a build verification script that runs the complete build pipeline and validates output. Test that the built project starts successfully and can respond to basic MCP protocol messages. Verify Winston logging works correctly in the built application. Create automated tests for MCP SDK integration. Document the verification process for CI/CD pipeline integration.",
+            "status": "done",
+            "testStrategy": "Run the verification script to ensure all components work together. Test MCP protocol message handling with sample requests. Verify logging output is generated correctly."
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T04:49:17.246Z",
+      "updated": "2025-06-20T13:59:32.158Z",
       "description": "Tasks for master context"
     }
   }

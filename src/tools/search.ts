@@ -6,14 +6,17 @@ import {
   AuthenticationError,
   RateLimitError,
   ServerError,
-} from '../clients/openrouter';
-import { validateSearchInput, type SearchToolInput } from '../schemas/search';
-import type { ChatCompletionRequest } from '../types/openrouter';
+} from '../clients/openrouter.js';
+import {
+  validateSearchInput,
+  type SearchToolInput,
+} from '../schemas/search.js';
+import type { ChatCompletionRequest } from '../types/openrouter.js';
 import {
   formatSearchResponse,
   createErrorResponse,
   type SearchResponse,
-} from '../types/search';
+} from '../types/search.js';
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',

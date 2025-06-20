@@ -8,15 +8,15 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import winston from 'winston';
 
-import { ConfigurationManager, ConfigurationError } from './config';
-import { createSearchTool } from './tools/search';
-import { validateSearchResponse } from './types/search';
+import { ConfigurationManager, ConfigurationError } from './config/index.js';
+import { createSearchTool } from './tools/search.js';
+import { validateSearchResponse } from './types/search.js';
 
 // Export our OpenRouter client and types
-export * from './clients';
-export * from './types';
-export * from './tools';
-export * from './schemas';
+export * from './clients/index.js';
+export * from './types/index.js';
+export * from './tools/index.js';
+export * from './schemas/index.js';
 
 // Global configuration and logger
 let config: ConfigurationManager;

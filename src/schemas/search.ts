@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { PerplexityModelId } from '../types/openrouter';
+import type { PerplexityModelId } from '../types/openrouter.js';
 
 /**
  * Supported Perplexity models for search operations

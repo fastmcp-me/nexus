@@ -4,7 +4,7 @@ import type {
   ChatCompletionChunk,
   OpenRouterError,
   PerplexityModelId,
-} from '../types/openrouter';
+} from '../types/openrouter.js';
 
 export interface OpenRouterClientConfig {
   apiKey: string;

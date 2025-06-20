@@ -1,5 +1,5 @@
-import { EnvironmentConfig, ConfigurationError } from './types';
-import { validateConfigurationOrThrow } from './validation';
+import { EnvironmentConfig, ConfigurationError } from './types.js';
+import { validateConfigurationOrThrow } from './validation.js';
 
 /**
  * ConfigurationManager provides a singleton interface to access configuration values

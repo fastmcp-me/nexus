@@ -1,4 +1,4 @@
-import type { ChatCompletionResponse, Usage } from './openrouter';
+import type { ChatCompletionResponse, Usage } from './openrouter.js';
 
 /**
  * Source information for search results
