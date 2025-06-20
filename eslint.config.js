@@ -24,6 +24,16 @@ export default [
         __filename: 'readonly',
         module: 'readonly',
         require: 'readonly',
+        // Web APIs
+        fetch: 'readonly',
+        AbortController: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        TextDecoder: 'readonly',
+        TextEncoder: 'readonly',
+        RequestInit: 'readonly',
+        // Test globals
+        global: 'readonly',
       },
     },
     plugins: {

@@ -222,7 +222,7 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -230,7 +230,7 @@
             "description": "Create comprehensive TypeScript type definitions for OpenRouter API request and response structures, focusing on chat completions endpoint and Perplexity Sonar models",
             "dependencies": [],
             "details": "Define interfaces for ChatCompletionRequest, ChatCompletionResponse, Message, Choice, Usage, and Error types. Include union types for Perplexity Sonar model variants. Create enums for roles (user, assistant, system) and finish reasons. Add optional streaming response types with delta structures.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Create unit tests to validate type definitions compile correctly and cover all required properties"
           },
           {
@@ -241,7 +241,7 @@
               1
             ],
             "details": "Implement OpenRouterClient class with constructor accepting API key and optional base URL. Set up default headers including Authorization Bearer token, Content-Type application/json, and User-Agent. Use fetch API with proper TypeScript typing. Include method for setting custom headers and API key validation.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Mock fetch API and test authentication header injection, base URL construction, and API key validation"
           },
           {
@@ -252,7 +252,7 @@
               2
             ],
             "details": "Implement chatCompletions method accepting ChatCompletionRequest parameters. Format request payload with messages, model selection (default to Perplexity Sonar models), temperature, max_tokens, and stream options. Handle both streaming and non-streaming requests with appropriate content-type headers.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test with mock requests for both streaming and non-streaming modes, validate payload formatting and model parameter handling"
           },
           {
@@ -263,7 +263,7 @@
               3
             ],
             "details": "Create custom error classes for different error types (AuthenticationError, RateLimitError, APIError). Implement retry logic with exponential backoff for transient errors (429, 500, 502, 503, 504). Add timeout handling with configurable timeout values. Parse and structure API error responses into meaningful error objects.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test error scenarios with mocked HTTP responses, validate retry behavior with different status codes, and test timeout handling"
           },
           {
@@ -274,7 +274,7 @@
               4
             ],
             "details": "Implement streaming response parser for SSE format with 'data: ' prefixed JSON chunks. Handle stream lifecycle events (start, data, end, error). Create async generator or callback-based interface for consuming streaming responses. Parse delta responses and reconstruct complete messages. Handle connection cleanup and abort signals.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test streaming with mock SSE responses, validate delta parsing and message reconstruction, test stream interruption and cleanup"
           }
         ]
@@ -694,7 +694,7 @@
     ],
     "metadata": {
       "created": "2025-06-20T01:19:01.836Z",
-      "updated": "2025-06-20T01:50:43.642Z",
+      "updated": "2025-06-20T02:06:57.261Z",
       "description": "Tasks for master context"
     }
   }
