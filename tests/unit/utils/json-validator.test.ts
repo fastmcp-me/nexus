@@ -13,6 +13,9 @@ vi.mock('../../../src/utils/logger.js', () => ({
     error: vi.fn(),
     debug: vi.fn(),
     info: vi.fn(),
+    jsonSerialization: vi.fn(),
+    responseValidation: vi.fn(),
+    jsonRpc: vi.fn(),
   },
 }));
 
@@ -186,7 +189,11 @@ describe('JSONValidator', () => {
   describe('wrapMCPResponse', () => {
     it('should wrap valid MCP responses', () => {
       const response = {
-        content: [{ type: 'text', text: 'Hello' }],
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          content: [{ type: 'text', text: 'Hello' }],
+        },
       };
 
       const result = JSONValidator.wrapMCPResponse(response);
@@ -196,7 +203,11 @@ describe('JSONValidator', () => {
 
     it('should handle responses with circular references', () => {
       const response: Record<string, unknown> = {
-        content: [{ type: 'text', text: 'Hello' }],
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          content: [{ type: 'text', text: 'Hello' }],
+        },
       };
       response.self = response; // Create circular reference
 
@@ -214,20 +225,30 @@ describe('JSONValidator', () => {
     });
 
     it('should handle responses that fail serialization', () => {
+      // Create an object that will cause serialization to fail with fallback: false
+      const obj = {};
+      Object.defineProperty(obj, 'badProperty', {
+        get() {
+          throw new Error('Serialization should fail');
+        },
+        enumerable: true,
+      });
+
       const response = {
-        content: [
-          {
-            type: 'text',
-            text: 'Hello',
-            func: () => 'world', // Function that will cause issues
-          },
-        ],
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          content: [obj],
+        },
       };
 
       const result = JSONValidator.wrapMCPResponse(response);
 
-      // Should still work with fallback serialization
-      expect(result).toBeDefined();
+      // Should return error response due to serialization failure
+      expect(result).toHaveProperty('error');
+      expect(
+        (result as Record<string, unknown>).error as Record<string, unknown>
+      ).toHaveProperty('code');
     });
   });
 
