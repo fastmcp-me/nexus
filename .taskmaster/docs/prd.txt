@@ -1,9 +1,9 @@
-# Overview  
+# Overview
 OpenRouter Search MCP Server is a lightweight Node.js-based Model Context Protocol (MCP) server that provides AI copilots with access to real-time search capabilities via OpenRouter's API, specifically targeting Perplexity Sonar models. This tool addresses the limitation of existing generic URL fetchers and poorly implemented built-in search tools by leveraging Perplexity's high-quality, real-time search capabilities.
 
 The target audience is users of AI assistants and copilots (Claude Desktop, Claude Code, Cursor, etc.) who need access to current, accurate information during their workflows. The MCP server runs locally via STDIO and integrates seamlessly with any MCP-compatible AI client, providing transparent access to real-time search without requiring frontend interfaces.
 
-# Core Features  
+# Core Features
 ## Primary Search Tool
 - **search_tool**: Single, well-defined search endpoint that accepts queries and returns real-time data
 - **Transparent Integration**: Tool description written to be self-explanatory to AI copilots
@@ -16,7 +16,7 @@ The target audience is users of AI assistants and copilots (Claude Desktop, Clau
 - **OpenRouter API Integration**: Uses `/chat/completions` endpoint with streaming support
 - **Error Handling**: Robust error handling and meaningful error responses
 
-# User Experience  
+# User Experience
 ## User Personas
 - **Primary**: Users of AI assistants (Claude Desktop, Claude Code, Cursor) requiring real-time information
 - **Secondary**: Developers and technical professionals using AI copilots for software development
@@ -33,7 +33,7 @@ The target audience is users of AI assistants and copilots (Claude Desktop, Clau
 - Tool descriptions must be clear and comprehensive for AI assistant understanding
 - Error messages should be developer-friendly and actionable
 
-# Technical Architecture  
+# Technical Architecture
 ## System Components
 - **MCP Server Core**: Node.js application using official TypeScript SDK
 - **OpenRouter Integration**: HTTP client for API communication
@@ -73,7 +73,7 @@ SearchResponse {
 - **Testing**: Vitest, mocking libraries, test coverage reporting
 - **Environment**: Local development environment with STDIO support
 
-# Development Roadmap  
+# Development Roadmap
 ## Phase 1: MVP (Core Search Functionality)
 - Test suite setup with Vitest and TDD approach
 - Basic MCP server setup with TypeScript SDK
@@ -137,7 +137,7 @@ This project will follow strict TDD practices using the Red-Green-Refactor cycle
 - **Error Handling**: Comprehensive edge case coverage
 - **Refactoring Safety**: Confident code improvements with test safety net
 
-# Risks and Mitigations  
+# Risks and Mitigations
 ## Technical Challenges
 - **MCP Protocol Compliance**: Mitigate by following official TypeScript SDK patterns and documentation
 - **OpenRouter API Changes**: Implement robust error handling and API versioning awareness
@@ -153,7 +153,7 @@ This project will follow strict TDD practices using the Red-Green-Refactor cycle
 - **Development Time**: Prioritize core functionality over advanced features
 - **Maintenance**: Design for simplicity to reduce ongoing maintenance burden
 
-# Appendix  
+# Appendix
 ## Research Findings
 ### MCP Server Best Practices (2025)
 - Use Node.js v16+ with TypeScript for type safety
