@@ -11,6 +11,7 @@ import winston from 'winston';
 import { ConfigurationManager, ConfigurationError } from './config/index.js';
 import { createSearchTool } from './tools/search.js';
 import { validateSearchResponse } from './types/search.js';
+import { JSONValidator, safeStringify } from './utils/json-validator.js';
 import {
   logger,
   withCorrelationId,
@@ -188,7 +189,7 @@ server.setRequestHandler(
         },
       });
 
-      return { tools };
+      return JSONValidator.wrapMCPResponse({ tools });
     });
   })
 );
@@ -281,14 +282,14 @@ server.setRequestHandler(
               responseTime: result.metadata.responseTime,
             });
 
-            return {
+            return JSONValidator.wrapMCPResponse({
               content: [
                 {
                   type: 'text',
                   text: responseText,
                 },
               ],
-            };
+            });
           } catch (error) {
             logger.error('Unexpected error during search', { error });
             return MCPErrorHandler.createSafeResponse(error, {
@@ -303,14 +304,14 @@ server.setRequestHandler(
           logger.info('Legacy model search requested', {
             query: request.params.arguments?.query,
           });
-          return {
+          return JSONValidator.wrapMCPResponse({
             content: [
               {
                 type: 'text',
                 text: `Legacy model search for: ${request.params.arguments?.query || 'all'}. Use the 'search' tool instead for actual search functionality.`,
               },
             ],
-          };
+          });
         }
 
         default:
@@ -331,7 +332,7 @@ server.setRequestHandler(
 
     return withCorrelationId(correlationId, () => {
       logger.debug('Received list resources request');
-      return {
+      return JSONValidator.wrapMCPResponse({
         resources: [
           {
             uri: 'config://status',
@@ -340,7 +341,7 @@ server.setRequestHandler(
             mimeType: 'application/json',
           },
         ],
-      };
+      });
     });
   })
 );
@@ -371,15 +372,22 @@ server.setRequestHandler(
               },
             };
 
-            return {
+            const statusJsonResult = JSONValidator.safeStringify(status, {
+              sanitize: true,
+              fallback: true,
+            });
+
+            return JSONValidator.wrapMCPResponse({
               contents: [
                 {
                   uri: request.params.uri,
                   mimeType: 'application/json',
-                  text: JSON.stringify(status, null, 2),
+                  text: statusJsonResult.success
+                    ? statusJsonResult.data
+                    : safeStringify(status),
                 },
               ],
-            };
+            });
           } catch (error) {
             logger.error('Error generating status report', { error });
             const errorStatus = {
@@ -388,15 +396,22 @@ server.setRequestHandler(
               error: error instanceof Error ? error.message : String(error),
             };
 
-            return {
+            const errorJsonResult = JSONValidator.safeStringify(errorStatus, {
+              sanitize: true,
+              fallback: true,
+            });
+
+            return JSONValidator.wrapMCPResponse({
               contents: [
                 {
                   uri: request.params.uri,
                   mimeType: 'application/json',
-                  text: JSON.stringify(errorStatus, null, 2),
+                  text: errorJsonResult.success
+                    ? errorJsonResult.data
+                    : safeStringify(errorStatus),
                 },
               ],
-            };
+            });
           }
         }
 
