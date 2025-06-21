@@ -66,6 +66,14 @@
   ],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adawalli/nexus.git"
+  },
+  "homepage": "https://github.com/adawalli/nexus#readme",
+  "bugs": {
+    "url": "https://github.com/adawalli/nexus/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.0",
     "axios": "^1.10.0",
