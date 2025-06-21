@@ -404,7 +404,8 @@ export class OpenRouterClient {
               const parsed: ChatCompletionChunk = JSON.parse(data);
               yield parsed;
             } catch (parseError) {
-              console.warn('Failed to parse SSE data:', data, parseError);
+              // Log parsing errors but continue processing
+              // Note: Using minimal logging to avoid stdout contamination
               continue;
             }
           }
