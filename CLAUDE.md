@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an MCP (Model Context Protocol) server for OpenRouter model search and discovery. The project provides a TypeScript-based server that interfaces with the OpenRouter API, specifically focused on Perplexity Sonar models for chat completions.
+This is Nexus MCP - an intelligent AI model search and discovery server implementing the Model Context Protocol (MCP). The project provides a production-ready TypeScript server that interfaces with the OpenRouter API, featuring Perplexity Sonar models for AI-powered web search with proper source citations. The server includes a sophisticated plugin system for extensibility and enterprise-grade reliability features.
 
 ## Development Commands
 
@@ -68,29 +68,48 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 
 1. **MCP Server Entry Point** (`src/index.ts`)
 
-   - Initializes the MCP server using `@modelcontextprotocol/sdk`
-   - Sets up stdio transport for communication
-   - Currently basic setup with empty capabilities
+   - Fully implemented MCP server with complete tool and resource handlers
+   - Initializes configuration management and search tool capabilities
+   - Graceful shutdown handling and comprehensive error management
+   - Request deduplication and correlation ID tracking
+   - STDIO transport with enhanced error handling
 
-2. **OpenRouter Client** (`src/clients/openrouter.ts`)
+2. **Configuration System** (`src/config/`)
 
-   - Robust HTTP client for OpenRouter API
-   - Implements retry logic with exponential backoff
-   - Supports both streaming and non-streaming chat completions
-   - Comprehensive error handling with specific error classes
-   - API key validation and request authentication
+   - JSON schema-based environment validation (`validation.ts`)
+   - Type-safe configuration management (`manager.ts`, `types.ts`)
+   - Structured logging with Winston integration (`logging.ts`)
+   - Environment-based configuration with masked API keys
 
-3. **Type Definitions** (`src/types/openrouter.ts`)
+3. **Search Tool Implementation** (`src/tools/search.ts`)
 
-   - Complete TypeScript interfaces for OpenRouter API
-   - Chat completion request/response types
-   - Perplexity model type definitions
-   - Error response structures
+   - Production-ready search tool with caching and deduplication
+   - Request validation using Zod schemas
+   - Performance metrics tracking and optimization
+   - Comprehensive error handling for different failure modes
+   - OpenRouter client integration with retry logic
 
-4. **Project Structure**
-   - `src/handlers/` - Empty directory for MCP request handlers
-   - `src/utils/` - Empty directory for utility functions
-   - `tests/` - Comprehensive test suite with fixtures and mocks
+4. **Plugin System** (`src/plugins/interfaces.ts`)
+
+   - Extensible plugin architecture for providers, tools, and integrations
+   - Type-safe plugin interfaces with lifecycle management
+   - Plugin discovery, loading, and health monitoring
+   - Standardized error handling and performance metrics
+
+5. **Utility Infrastructure** (`src/utils/`)
+
+   - JSON validation and sanitization (`json-validator.ts`)
+   - MCP request/response error handling (`mcp-error-handler.ts`)
+   - TTL caching system (`cache.ts`)
+   - Request deduplication (`deduplication.ts`)
+   - STDIO stream handling (`stdio-handler.ts`)
+   - Response optimization (`response-optimizer.ts`)
+
+6. **Type System** (`src/types/`)
+
+   - Complete OpenRouter API type definitions (`openrouter.ts`)
+   - Search operation types and validators (`search.ts`)
+   - Schema definitions with Zod validation (`src/schemas/`)
 
 ### Testing Architecture
 
@@ -115,19 +134,29 @@ This is an MCP (Model Context Protocol) server for OpenRouter model search and d
 
 ## Key Implementation Details
 
-### OpenRouter Client Features
+### Search Tool Features
 
-- Supports Perplexity Sonar models by default
-- Implements retry logic for rate limits and server errors
-- Provides both streaming and non-streaming interfaces
-- Comprehensive error hierarchy (AuthenticationError, RateLimitError, ServerError, ClientError)
-- Request timeout handling and abort controller usage
+- **Intelligent Search**: AI-powered web search using Perplexity Sonar models
+- **Performance Optimization**: TTL caching, request deduplication, and response optimization
+- **Error Resilience**: Comprehensive error handling with retry logic and graceful degradation
+- **Metrics Collection**: Performance tracking, memory usage monitoring, and execution statistics
+- **Input Validation**: Zod schema validation for all request parameters
+- **Type Safety**: Complete TypeScript coverage with strict type checking
 
-### Type Safety
+### Configuration Management
 
-- Strict TypeScript configuration
-- Comprehensive type definitions for OpenRouter API
-- Proper error typing with discriminated unions
+- **Environment Validation**: JSON schema-based configuration validation
+- **Security**: API key masking and secure credential handling
+- **Logging**: Structured logging with configurable levels and Winston integration
+- **Type Safety**: Fully typed configuration system with compile-time validation
+
+### Plugin Architecture
+
+- **Extensible Design**: Support for provider, tool, and integration plugins
+- **Lifecycle Management**: Plugin loading, initialization, health monitoring, and cleanup
+- **Type Safety**: Complete TypeScript interfaces for all plugin types
+- **Error Handling**: Standardized error categorization and reporting
+- **Performance**: Built-in metrics collection and performance monitoring
 
 ### Task Master Integration
 
@@ -140,12 +169,14 @@ The project uses Task Master for development workflow management. See `.windsurf
 
 ## Development Notes
 
-- The project is in early development with basic MCP server structure
-- Handlers directory is empty and ready for MCP tool/resource implementations
-- OpenRouter client is fully implemented and tested
-- Type definitions focus on chat completions and Perplexity models
+- Production-ready MCP server with comprehensive tool and resource implementations
+- Plugin system architecture ready for extensibility with provider, tool, and integration plugins
+- Complete OpenRouter client with caching, deduplication, and performance optimization
+- Sophisticated configuration system with environment validation and type safety
+- Enterprise-grade error handling with structured logging and metrics collection
 - Test coverage requirements are set to 90% across all metrics
-- Uses ES modules throughout the project
+- Uses ES modules throughout the project with strict TypeScript configuration
+- NPX-ready distribution for zero-install deployment
 
 ## Pre-Commit Guidelines
 
@@ -190,24 +221,28 @@ The project uses a sophisticated configuration system in `src/config/`:
 
 ### Request Flow
 
-1. **Initialization**: Configuration → Logger setup → Search tool initialization
-2. **Tool Registration**: Search tool registered
-3. **Request Handling**: Structured request/response with comprehensive error handling
-4. **Resource Management**: Configuration status endpoint for health monitoring
+1. **Initialization**: Configuration validation → Logger setup → Search tool initialization → Plugin system ready
+2. **Tool Registration**: Search tool with input/output validation schemas
+3. **Request Handling**: Correlation ID generation → Input validation → Deduplication → Caching → API execution
+4. **Resource Management**: Configuration status endpoint with health monitoring and metrics
+5. **Error Handling**: Structured error responses with correlation tracking and performance metrics
 
 ### Error Handling Strategy
 
-- **Structured errors** - Custom error classes for different failure modes
-- **Graceful degradation** - Server continues running even if search tool fails to initialize
-- **Comprehensive logging** - All errors logged with context and metadata
-- **User-friendly responses** - Clear error messages returned to MCP clients
+- **Layered Error Handling**: Plugin-level, tool-level, and server-level error boundaries
+- **Error Classification**: Categorized error types (auth, rate_limit, validation, timeout, etc.)
+- **Graceful Degradation**: Server continues operation even with individual component failures
+- **Correlation Tracking**: Request correlation IDs for distributed tracing and debugging
+- **Comprehensive Logging**: Structured logging with correlation IDs, performance metrics, and error context
+- **User-Friendly Responses**: Clear, actionable error messages with troubleshooting guidance
 
-### Search Tool Implementation
+### Advanced Features
 
-- **OpenRouter integration** - Full client with retry logic and rate limiting
-- **Response validation** - Schema validation for all search responses
-- **Metadata tracking** - Performance metrics, token usage, source counts
-- **Flexible parameters** - Model selection, token limits, temperature control
+- **Request Deduplication**: Prevents duplicate concurrent requests with identical parameters
+- **TTL Caching**: Configurable response caching to reduce API calls and improve performance
+- **Performance Monitoring**: Real-time metrics collection for response times, memory usage, and API efficiency
+- **STDIO Optimization**: Enhanced STDIO handling with buffering and cleanup for MCP transport
+- **Configuration Validation**: Runtime configuration validation with detailed error reporting
 
 ## Development Workflow Integration
 

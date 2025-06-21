@@ -1,18 +1,78 @@
-# Nexus MCP Server
+<!-- markdownlint-disable MD033 MD041 -->
 
-Nexus is a powerful Model Context Protocol (MCP) server that provides intelligent AI model search and discovery using OpenRouter integration. This server seamlessly integrates with Claude Code, Cursor, and other MCP-compatible clients to provide real-time web search functionality powered by advanced AI models.
+<div align="center">
 
-## Features
+# 🔍 Nexus MCP Server
 
-- **Zero-Install Setup**: Run instantly with `npx` - no installation or build steps required
-- **AI-Powered Search**: Uses Perplexity Sonar models for intelligent web search with citations
-- **Real-time Results**: Searches current web content and provides up-to-date information
-- **Source Citations**: Provides source URLs and metadata for search results
-- **Configurable Parameters**: Adjust search models, token limits, temperature, and more
-- **Error Handling**: Comprehensive error handling with retry logic and graceful degradation
-- **Production Ready**: Bundled distribution with zero dependencies
+**AI integration without the complexity**
 
-## Quick Start with NPX (Recommended)
+[![npm version](https://badge.fury.io/js/nexus-mcp.svg)](https://www.npmjs.com/package/nexus-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
+
+_Intelligent AI model search and discovery with zero-install simplicity_
+
+[Quick Start](#-quick-start) • [Features](#-features) • [Documentation](#-documentation) • [Contributing](#-contributing)
+
+</div>
+
+---
+
+## 🚀 What is Nexus?
+
+Nexus is a production-ready **Model Context Protocol (MCP) server** that brings AI-powered web search directly into your development environment. Get intelligent search results with proper citations in **Claude Desktop**, **Cursor**, or any MCP-compatible client - all with a single command.
+
+### Why Nexus?
+
+- **🎯 Zero Setup**: Ready in 30 seconds with `npx` - no installation, no configuration
+- **🧠 AI-Powered**: Uses Perplexity Sonar models for intelligent, current web search
+- **📚 Source Citations**: Get authoritative sources with every search result
+- **🔧 Developer-First**: Built for developers who want AI capabilities without complexity
+- **⚡ Production-Ready**: Enterprise-grade reliability with comprehensive error handling
+
+## ✨ Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🚀 **Zero-Install Simplicity**
+
+- Ready in 30 seconds with `npx`
+- No dependencies or build steps
+- Cross-platform compatibility
+- Always up-to-date
+
+### 🧠 **AI-Powered Intelligence**
+
+- Perplexity Sonar model integration
+- Real-time web content search
+- Context-aware result ranking
+- Multiple model options
+
+</td>
+<td width="50%">
+
+### 📚 **Professional Quality**
+
+- Source citations and metadata
+- Comprehensive error handling
+- Production-grade reliability
+- TypeScript implementation
+
+### 🔧 **Developer Experience**
+
+- MCP protocol compliance
+- Extensive documentation
+- Configurable parameters
+- Community support
+
+</td>
+</tr>
+</table>
+
+## 🏃‍♂️ Quick Start
 
 **🚀 Zero-install setup - Ready in 30 seconds!**
 
@@ -331,20 +391,105 @@ npm run lint
 npm run format
 ```
 
-## API Credits and Costs
+## 💰 API Credits and Costs
 
-This server uses OpenRouter's API, which charges based on token usage. Costs vary by model:
+This server uses OpenRouter's API, which charges based on token usage:
 
-- Perplexity Sonar models: Check current pricing at [OpenRouter Models](https://openrouter.ai/models)
-- Monitor your usage through the OpenRouter dashboard
-- Set usage limits in your OpenRouter account if needed
+- **Perplexity Sonar models**: Check current pricing at [OpenRouter Models](https://openrouter.ai/models)
+- **Usage monitoring**: Track consumption through the OpenRouter dashboard
+- **Cost control**: Set usage limits in your OpenRouter account
+- **Optimization**: Nexus includes built-in rate limiting and intelligent caching
 
-## Support
+## 📚 Documentation
 
-- [OpenRouter Documentation](https://openrouter.ai/docs)
-- [Model Context Protocol Specification](https://modelcontextprotocol.io)
-- [Report Issues](https://github.com/your-username/nexus-mcp/issues)
+<div align="center">
 
-## License
+| 📖 **Guide**        | 🔗 **Link**                                 | 📝 **Description**               |
+| ------------------- | ------------------------------------------- | -------------------------------- |
+| **Quick Start**     | [Getting Started](#-quick-start)            | Zero-install setup in 30 seconds |
+| **API Reference**   | [MCP Tools](CLAUDE.md#development-commands) | Complete command reference       |
+| **Configuration**   | [Environment Setup](#configuration)         | Advanced configuration options   |
+| **Contributing**    | [Contributing Guide](CONTRIBUTING.md)       | Join our open source community   |
+| **Troubleshooting** | [Common Issues](#troubleshooting)           | Solutions to common problems     |
 
-ISC License - see LICENSE file for details.
+</div>
+
+## 🤝 Contributing
+
+We welcome contributions from developers of all experience levels!
+
+<table>
+<tr>
+<td width="33%">
+
+### 🚀 **Get Started**
+
+- Fork the repository
+- Read our [Contributing Guide](CONTRIBUTING.md)
+- Check out [good first issues](https://github.com/search?q=repo%3Anexus-mcp+label%3A%22good+first+issue%22&type=issues)
+
+</td>
+<td width="33%">
+
+### 🐛 **Report Issues**
+
+- [Bug Reports](https://github.com/nexus-mcp/issues/new?template=bug_report.yml)
+- [Feature Requests](https://github.com/nexus-mcp/issues/new?template=feature_request.yml)
+- [Ask Questions](https://github.com/nexus-mcp/issues/new?template=question.yml)
+
+</td>
+<td width="33%">
+
+### 💬 **Join Community**
+
+- [GitHub Discussions](https://github.com/nexus-mcp/discussions)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Roadmap & Project Board](https://github.com/nexus-mcp/projects)
+
+</td>
+</tr>
+</table>
+
+### 🌟 Recognition
+
+Contributors are recognized in our:
+
+- [Contributors list](https://github.com/nexus-mcp/graphs/contributors)
+- Release notes for significant contributions
+- Community spotlights and testimonials
+
+## 🔗 Related Projects
+
+- [Model Context Protocol](https://modelcontextprotocol.io) - The standard we implement
+- [OpenRouter](https://openrouter.ai) - Our AI model provider
+- [Claude Desktop](https://claude.ai) - Primary MCP client
+- [Cursor](https://cursor.sh) - AI-powered code editor with MCP support
+
+## 📞 Support & Community
+
+<div align="center">
+
+| 💬 **Need Help?**    | 🔗 **Resource**                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Quick Questions**  | [GitHub Discussions](https://github.com/nexus-mcp/discussions)                                       |
+| **Bug Reports**      | [GitHub Issues](https://github.com/nexus-mcp/issues)                                                 |
+| **Documentation**    | [OpenRouter Docs](https://openrouter.ai/docs) • [MCP Specification](https://modelcontextprotocol.io) |
+| **Feature Requests** | [Enhancement Proposals](https://github.com/nexus-mcp/issues/new?template=feature_request.yml)        |
+
+</div>
+
+## 📄 License
+
+**MIT License** - see [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**Made with ❤️ by the open source community**
+
+[⭐ Star us on GitHub](https://github.com/nexus-mcp) • [📦 View on NPM](https://www.npmjs.com/package/nexus-mcp) • [📚 Read the Docs](CLAUDE.md)
+
+_Nexus: AI integration without the complexity_
+
+</div>

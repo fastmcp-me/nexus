@@ -177,7 +177,8 @@ server.setRequestHandler(
         });
       }
 
-      return JSONValidator.wrapMCPResponse({ tools });
+      // Return the tools directly - MCP SDK will wrap this in JSON-RPC format
+      return { tools };
     });
   })
 );
@@ -270,14 +271,14 @@ server.setRequestHandler(
               responseTime: result.metadata.responseTime,
             });
 
-            return JSONValidator.wrapMCPResponse({
+            return {
               content: [
                 {
                   type: 'text',
                   text: responseText,
                 },
               ],
-            });
+            };
           } catch (error) {
             logger.error('Unexpected error during search', { error });
             return MCPErrorHandler.createSafeResponse(error, {
@@ -305,7 +306,8 @@ server.setRequestHandler(
 
     return withCorrelationId(correlationId, () => {
       logger.debug('Received list resources request');
-      return JSONValidator.wrapMCPResponse({
+      // Return the resources directly - MCP SDK will wrap this in JSON-RPC format
+      return {
         resources: [
           {
             uri: 'config://status',
@@ -315,7 +317,7 @@ server.setRequestHandler(
             mimeType: 'application/json',
           },
         ],
-      });
+      };
     });
   })
 );
@@ -351,7 +353,7 @@ server.setRequestHandler(
               fallback: true,
             });
 
-            return JSONValidator.wrapMCPResponse({
+            return {
               contents: [
                 {
                   uri: request.params.uri,
@@ -361,7 +363,7 @@ server.setRequestHandler(
                     : safeStringify(status),
                 },
               ],
-            });
+            };
           } catch (error) {
             logger.error('Error generating status report', { error });
             const errorStatus = {
@@ -375,7 +377,7 @@ server.setRequestHandler(
               fallback: true,
             });
 
-            return JSONValidator.wrapMCPResponse({
+            return {
               contents: [
                 {
                   uri: request.params.uri,
@@ -385,7 +387,7 @@ server.setRequestHandler(
                     : safeStringify(errorStatus),
                 },
               ],
-            });
+            };
           }
         }
 
