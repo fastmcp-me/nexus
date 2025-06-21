@@ -108,7 +108,7 @@ export class ConfigurationManager {
    * Get the default temperature for response generation
    */
   public getDefaultTemperature(): number {
-    return this.config.defaultTemperature || 0.7;
+    return this.config.defaultTemperature || 0.3;
   }
 
   /**

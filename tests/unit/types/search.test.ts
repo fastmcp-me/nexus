@@ -38,7 +38,7 @@ describe('Search Types', () => {
     it('should format a successful response correctly', () => {
       const startTime = Date.now() - 1000; // 1 second ago
       const query = 'test query';
-      const temperature = 0.7;
+      const temperature = 0.3;
       const maxTokens = 1000;
 
       const result = formatSearchResponse(
@@ -338,7 +338,7 @@ describe('Search Types', () => {
         model: 'test-model',
         timestamp: Date.now(),
         query: 'test query',
-        temperature: 0.7,
+        temperature: 0.3,
         maxTokens: 1000,
         usage: {
           prompt_tokens: 10,
@@ -348,7 +348,7 @@ describe('Search Types', () => {
         responseTime: 1500,
       };
 
-      expect(metadata.temperature).toBe(0.7);
+      expect(metadata.temperature).toBe(0.3);
       expect(metadata.maxTokens).toBe(1000);
       expect(metadata.usage?.total_tokens).toBe(30);
       expect(metadata.responseTime).toBe(1500);

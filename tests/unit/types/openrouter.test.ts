@@ -49,13 +49,13 @@ describe('OpenRouter Types', () => {
           { role: 'system', content: 'You are a helpful assistant' },
           { role: 'user', content: 'Hello' },
         ],
-        temperature: 0.7,
+        temperature: 0.3,
         max_tokens: 1000,
         stream: false,
         user: 'test-user',
       };
 
-      expect(request.temperature).toBe(0.7);
+      expect(request.temperature).toBe(0.3);
       expect(request.max_tokens).toBe(1000);
       expect(request.stream).toBe(false);
     });

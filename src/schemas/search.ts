@@ -60,7 +60,7 @@ export const SearchToolInputSchema = z.object({
     .number()
     .min(0, 'Temperature must be at least 0')
     .max(2, 'Temperature cannot exceed 2')
-    .default(0.7)
+    .default(0.3)
     .describe(
       'Controls randomness in the response (0 = deterministic, 2 = very random)'
     ),

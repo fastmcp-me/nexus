@@ -71,7 +71,7 @@ This information reflects the current state of AI technology and its application
         query: 'What are the latest developments in AI technology?',
         model: 'perplexity/sonar' as const,
         maxTokens: 1500,
-        temperature: 0.7,
+        temperature: 0.3,
       };
 
       const result = await searchTool.search(searchInput);

@@ -290,8 +290,8 @@ describe('RequestDeduplicator', () => {
 
 describe('createRequestKey', () => {
   it('should create consistent keys for identical parameters', () => {
-    const params1 = { query: 'test', model: 'gpt-4', temperature: 0.7 };
-    const params2 = { query: 'test', model: 'gpt-4', temperature: 0.7 };
+    const params1 = { query: 'test', model: 'gpt-4', temperature: 0.3 };
+    const params2 = { query: 'test', model: 'gpt-4', temperature: 0.3 };
 
     expect(createRequestKey(params1)).toBe(createRequestKey(params2));
   });
@@ -313,12 +313,12 @@ describe('createRequestKey', () => {
   it('should handle nested objects and arrays', () => {
     const params1 = {
       query: 'test',
-      options: { model: 'gpt-4', temperature: 0.7 },
+      options: { model: 'gpt-4', temperature: 0.3 },
       tags: ['ai', 'test'],
     };
     const params2 = {
       query: 'test',
-      options: { model: 'gpt-4', temperature: 0.7 },
+      options: { model: 'gpt-4', temperature: 0.3 },
       tags: ['ai', 'test'],
     };
 

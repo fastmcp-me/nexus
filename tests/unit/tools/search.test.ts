@@ -165,7 +165,7 @@ describe('SearchTool', () => {
         query: 'test query',
         model: 'perplexity/sonar' as const,
         maxTokens: 1000,
-        temperature: 0.7,
+        temperature: 0.3,
       };
 
       const result = await searchTool.search(input);
@@ -188,7 +188,7 @@ describe('SearchTool', () => {
       expect(mockClient.chatCompletions).toHaveBeenCalledWith({
         model: 'perplexity/sonar',
         messages: [{ role: 'user', content: 'test query' }],
-        temperature: 0.7,
+        temperature: 0.3,
         max_tokens: 1000,
         top_p: 1.0,
         frequency_penalty: 0.0,

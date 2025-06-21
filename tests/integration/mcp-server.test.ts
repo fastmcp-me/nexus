@@ -59,7 +59,7 @@ describe('MCP Server JSON-RPC Response Validation', () => {
                   description: 'Controls randomness in the response (0-2)',
                   minimum: 0,
                   maximum: 2,
-                  default: 0.7,
+                  default: 0.3,
                 },
               },
               required: ['query'],

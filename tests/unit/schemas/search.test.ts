@@ -16,7 +16,7 @@ describe('Search Schema Validation', () => {
       expect(result.query).toBe('test query');
       expect(result.model).toBe('perplexity/sonar');
       expect(result.maxTokens).toBe(1000);
-      expect(result.temperature).toBe(0.7);
+      expect(result.temperature).toBe(0.3);
     });
 
     it('should validate with all parameters', () => {
@@ -41,7 +41,7 @@ describe('Search Schema Validation', () => {
 
       expect(result.model).toBe('perplexity/sonar');
       expect(result.maxTokens).toBe(1000);
-      expect(result.temperature).toBe(0.7);
+      expect(result.temperature).toBe(0.3);
     });
 
     it('should reject empty query', () => {

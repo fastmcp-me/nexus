@@ -66,7 +66,7 @@ describe('ResponseOptimizer', () => {
     it('should format response with performance metrics', () => {
       const startTime = Date.now() - 1000;
       const query = 'test query';
-      const temperature = 0.7;
+      const temperature = 0.3;
       const maxTokens = 1000;
 
       const result = optimizer.formatSearchResponseOptimized(
@@ -403,7 +403,7 @@ describe('formatResponseQuick', () => {
       mockApiResponse,
       'test query',
       Date.now() - 500,
-      0.7,
+      0.3,
       1000
     );
 
@@ -411,7 +411,7 @@ describe('formatResponseQuick', () => {
     expect(result.result?.content).toBe('Quick test with https://example.com');
     expect(result.result?.sources).toHaveLength(1);
     expect(result.result?.sources[0].url).toBe('https://example.com');
-    expect(result.result?.metadata.temperature).toBe(0.7);
+    expect(result.result?.metadata.temperature).toBe(0.3);
     expect(result.result?.metadata.maxTokens).toBe(1000);
     expect(result.requestId).toBe('test-123');
   });

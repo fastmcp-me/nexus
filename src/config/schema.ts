@@ -317,9 +317,9 @@ export const CONFIG_SCHEMA: ConfigSchema[] = [
     field: 'defaultTemperature',
     envVar: 'OPENROUTER_DEFAULT_TEMPERATURE',
     required: false,
-    defaultValue: 0.7,
+    defaultValue: 0.3,
     validator: validateTemperature,
-    description: 'Default temperature for response generation (default: 0.7)',
+    description: 'Default temperature for response generation (default: 0.3)',
   },
   {
     field: 'defaultTopP',

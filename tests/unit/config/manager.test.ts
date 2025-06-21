@@ -128,7 +128,7 @@ describe('ConfigurationManager', () => {
         logLevel: 'info',
         baseUrl: 'https://openrouter.ai/api/v1',
         defaultMaxTokens: 1000,
-        defaultTemperature: 0.7,
+        defaultTemperature: 0.3,
         defaultTopP: 1.0,
         defaultFrequencyPenalty: 0.0,
         defaultPresencePenalty: 0.0,
