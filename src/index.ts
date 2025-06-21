@@ -500,14 +500,17 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  const errorLogger =
-    legacyLogger ||
-    winston.createLogger({
-      level: 'error',
-      format: winston.format.simple(),
-      transports: [new winston.transports.Console()],
-    });
-  errorLogger.error('Fatal error in main', { error });
-  process.exit(1);
-});
+// Only run main() if this file is executed directly (not imported)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch(error => {
+    const errorLogger =
+      legacyLogger ||
+      winston.createLogger({
+        level: 'error',
+        format: winston.format.simple(),
+        transports: [new winston.transports.Console()],
+      });
+    errorLogger.error('Fatal error in main', { error });
+    process.exit(1);
+  });
+}
