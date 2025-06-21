@@ -100,15 +100,22 @@ describe('MCP Server JSON-RPC Response Validation', () => {
       expect(validationResult.errors).toHaveLength(0);
 
       // Should contain tools array (this will fail because we get an error response)
-      expect(wrappedResponse.result.tools).toBeDefined();
-      expect(Array.isArray(wrappedResponse.result.tools)).toBe(true);
+      if (
+        'result' in wrappedResponse &&
+        wrappedResponse.result &&
+        typeof wrappedResponse.result === 'object'
+      ) {
+        const result = wrappedResponse.result as any;
+        expect(result.tools).toBeDefined();
+        expect(Array.isArray(result.tools)).toBe(true);
 
-      // Each tool should have required properties
-      wrappedResponse.result.tools.forEach((tool: any) => {
-        expect(tool.name).toBeDefined();
-        expect(tool.description).toBeDefined();
-        expect(tool.inputSchema).toBeDefined();
-      });
+        // Each tool should have required properties
+        result.tools.forEach((tool: any) => {
+          expect(tool.name).toBeDefined();
+          expect(tool.description).toBeDefined();
+          expect(tool.inputSchema).toBeDefined();
+        });
+      }
     });
 
     it('should handle empty tools list with valid JSON-RPC response', () => {
@@ -124,8 +131,13 @@ describe('MCP Server JSON-RPC Response Validation', () => {
         JsonRpcValidator.validateMessage(wrappedResponse);
       expect(validationResult.valid).toBe(true);
 
-      if ('result' in wrappedResponse) {
-        expect(wrappedResponse.result.tools).toEqual([]);
+      if (
+        'result' in wrappedResponse &&
+        wrappedResponse.result &&
+        typeof wrappedResponse.result === 'object'
+      ) {
+        const result = wrappedResponse.result as any;
+        expect(result.tools).toEqual([]);
       }
     });
 

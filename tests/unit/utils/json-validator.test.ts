@@ -215,13 +215,14 @@ describe('JSONValidator', () => {
 
       // Should return error response due to serialization failure
       expect(result).toHaveProperty('error');
-      expect(
-        (result as Record<string, unknown>).error as Record<string, unknown>
-      ).toHaveProperty('code');
-      expect(
-        ((result as Record<string, unknown>).error as Record<string, unknown>)
-          .code
-      ).toBe(-32603);
+      if (
+        'error' in result &&
+        result.error &&
+        typeof result.error === 'object'
+      ) {
+        expect(result.error).toHaveProperty('code');
+        expect((result.error as any).code).toBe(-32603);
+      }
     });
 
     it('should handle responses that fail serialization', () => {
@@ -246,9 +247,13 @@ describe('JSONValidator', () => {
 
       // Should return error response due to serialization failure
       expect(result).toHaveProperty('error');
-      expect(
-        (result as Record<string, unknown>).error as Record<string, unknown>
-      ).toHaveProperty('code');
+      if (
+        'error' in result &&
+        result.error &&
+        typeof result.error === 'object'
+      ) {
+        expect(result.error).toHaveProperty('code');
+      }
     });
   });
 

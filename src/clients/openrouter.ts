@@ -403,7 +403,7 @@ export class OpenRouterClient {
             try {
               const parsed: ChatCompletionChunk = JSON.parse(data);
               yield parsed;
-            } catch (parseError) {
+            } catch {
               // Log parsing errors but continue processing
               // Note: Using minimal logging to avoid stdout contamination
               continue;

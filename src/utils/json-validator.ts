@@ -1,5 +1,6 @@
 import {
   JsonRpcValidator,
+  JsonRpcResponse,
   createResponseValidationMiddleware,
 } from './json-rpc-validator.js';
 import { logger } from './logger.js';
@@ -362,13 +363,27 @@ export class JSONValidator {
   /**
    * Middleware function to wrap MCP responses with JSON validation
    */
-  static wrapMCPResponse<T>(response: T): T {
+  static wrapMCPResponse<T>(response: T): JsonRpcResponse {
     const startTime = Date.now();
 
     try {
-      // First validate JSON-RPC 2.0 compliance
+      // Check if response is already a JSON-RPC message
+      let jsonRpcResponse: unknown;
+
+      if (response && typeof response === 'object' && 'jsonrpc' in response) {
+        // Already a JSON-RPC response, validate as-is
+        jsonRpcResponse = response;
+      } else {
+        // Create a proper JSON-RPC success response from the result payload
+        jsonRpcResponse = JsonRpcValidator.createSuccessResponse(
+          null,
+          response
+        );
+      }
+
+      // Validate JSON-RPC 2.0 compliance
       const validatedResponse =
-        JsonRpcValidator.validateAndSanitizeResponse(response);
+        JsonRpcValidator.validateAndSanitizeResponse(jsonRpcResponse);
 
       // Then validate that the response can be serialized
       const validation = this.safeStringify(validatedResponse, {
@@ -388,7 +403,7 @@ export class JSONValidator {
           -32603,
           'Internal server error: Response serialization failed',
           validation.error
-        ) as T;
+        );
       }
 
       logger.responseValidation('post_serialization', 'passed', {
@@ -397,7 +412,7 @@ export class JSONValidator {
         sanitizationApplied: validation.sanitized,
       });
 
-      return validatedResponse as T;
+      return validatedResponse;
     } catch (error) {
       logger.responseValidation('post_serialization', 'failed', {
         validationErrors: [
@@ -410,14 +425,14 @@ export class JSONValidator {
         null,
         -32603,
         'Internal server error: Response processing failed'
-      ) as T;
+      );
     }
   }
 
   /**
    * Enhanced MCP response wrapper with pre-transmission validation
    */
-  static wrapMCPResponseWithValidation<T>(response: T): T {
+  static wrapMCPResponseWithValidation<T>(response: T): JsonRpcResponse {
     const startTime = Date.now();
     const validationMiddleware = createResponseValidationMiddleware();
 
@@ -434,7 +449,7 @@ export class JSONValidator {
         validationStatus: 'passed',
       });
 
-      return finalResponse as unknown as T;
+      return finalResponse;
     } catch (error) {
       logger.mcpProtocol('error', undefined, {
         duration: Date.now() - startTime,
@@ -446,7 +461,7 @@ export class JSONValidator {
         null,
         -32603,
         'Internal server error: Response validation failed'
-      ) as unknown as T;
+      );
     }
   }
 }
